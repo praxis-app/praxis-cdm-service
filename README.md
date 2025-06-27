@@ -1,6 +1,6 @@
 # Praxis CDM Service
 
-Matrix application service that adds collaborative decision-making (CDM) capabilities to Matrix chat rooms with support for proposals, consensus tracking, and AI-assisted facilitation.
+Matrix application service that adds collaborative decision-making (CDM) capabilities to Matrix chat rooms with support for proposals, vote validation, consensus tracking, and LLM-assisted facilitation.
 
 ## Work in progress
 
