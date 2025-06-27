@@ -33,6 +33,6 @@ dotenv.config();
 
   app.listen(port, () => {
     const url = `http://localhost:${port}`;
-    console.log(`Server running at ${url} 🚀`);
+    console.log(`Praxis CDM Service running at ${url} 🚀`);
   });
 })();
