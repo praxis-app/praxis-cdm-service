@@ -6,10 +6,13 @@ import helmet, { contentSecurityPolicy } from 'helmet';
 import morgan from 'morgan';
 import { appRouter } from './app.router';
 import { dataSource } from './database/data-source';
+import { initOllama } from './ollama/ollama.service';
 
 dotenv.config();
 
 (async () => {
+  const startTime = Date.now();
+
   const app = express();
   const port = process.env.PORT;
 
@@ -33,6 +36,9 @@ dotenv.config();
 
   app.listen(port, () => {
     const url = `http://localhost:${port}`;
-    console.log(`Praxis CDM Service running at ${url} 🚀`);
+    const timeTaken = Date.now() - startTime;
+    console.info(`Praxis CDM Service running at ${url} 🚀 - ${timeTaken}ms`);
   });
+
+  await initOllama();
 })();
