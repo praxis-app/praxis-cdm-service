@@ -1,4 +1,5 @@
 import ollama from 'ollama';
+import { MODELS } from './ollama.constants';
 
 export const ensureModel = async (modelName: string) => {
   try {
@@ -17,10 +18,10 @@ export const ensureModel = async (modelName: string) => {
 };
 
 export const initOllama = async () => {
-  await ensureModel('gemma3:1b');
+  await ensureModel(MODELS['Gemma 3 1B']);
 
   const { message } = await ollama.chat({
-    model: 'gemma3:1b',
+    model: MODELS['Gemma 3 1B'],
     messages: [
       {
         role: 'system',
