@@ -17,10 +17,10 @@ export const ensureModel = async (modelName: string) => {
 };
 
 export const initOllama = async () => {
-  await ensureModel('llama3.1');
+  await ensureModel('gemma3:1b');
 
   const { message } = await ollama.chat({
-    model: 'llama3.1',
+    model: 'gemma3:1b',
     messages: [
       {
         role: 'system',
@@ -28,7 +28,7 @@ export const initOllama = async () => {
           You are a service named "Ollama" that is running on a server.
           You are responsible for delcaring that you have been initialized.
           Include an emoji at the end of each response that isn't a rocket, but still makes sense.
-          Each response should include your name and be 7 words or less.
+          Each response should be 7 words or less.
         `,
       },
       {
@@ -37,5 +37,5 @@ export const initOllama = async () => {
       },
     ],
   });
-  console.info(message.content);
+  console.info(`Ollama: ${message.content.trim()}`);
 };
