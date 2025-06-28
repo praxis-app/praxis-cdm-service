@@ -17,7 +17,7 @@ export const testOllama = async () => {
       {
         role: 'user',
         content: `
-          Emit a 10 word response declaring that Ollama is ready to use.
+          Emit a 7 word response declaring that Ollama is ready to use.
           Include an emoji at the end that isn't a rocket.
           Do not include any other text or quotes.
         `,
