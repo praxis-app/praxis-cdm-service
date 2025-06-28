@@ -20,22 +20,7 @@ export const isReadyForProposal = async ({ messages }: Conversation) => {
 
   // Limit conversation length to avoid excessive processing
   const recentMessages = messages.slice(-50);
-
-  const formattedMessages = recentMessages
-    .map((message) => `${message.sender}: ${message.body}`)
-    .join('\n');
-
-  // Add metadata to the conversation
-  const participants = Array.from(new Set(recentMessages.map((m) => m.sender)));
-  const participantCount = new Set(recentMessages.map((m) => m.sender)).size;
-  const messageCount = recentMessages.length;
-
-  const formattedConversation = JSON.stringify({
-    messages: formattedMessages,
-    participants,
-    participantCount,
-    messageCount,
-  });
+  const formattedConversation = getFormattedConversation(recentMessages);
 
   const { message } = await ollama.chat({
     model: MODELS['Llama 3.1'],
@@ -107,20 +92,7 @@ export const summarizeConversation = async ({ messages }: Conversation) => {
 
   // Limit conversation length to avoid excessive processing
   const recentMessages = messages.slice(-50);
-
-  const formattedMessages = recentMessages
-    .map((message) => `${message.sender}: ${message.body}`)
-    .join('\n');
-
-  // Add metadata to the conversation
-  const participantCount = new Set(recentMessages.map((m) => m.sender)).size;
-  const messageCount = recentMessages.length;
-
-  const formattedConversation = JSON.stringify({
-    messages: formattedMessages,
-    participantCount,
-    messageCount,
-  });
+  const formattedConversation = getFormattedConversation(recentMessages);
 
   const { message } = await ollama.chat({
     model: MODELS['Llama 3.2 3B'],
@@ -179,4 +151,19 @@ export const getOllamaHealth = async () => {
   });
 
   return message.content.trim();
+};
+
+const getFormattedConversation = (messages: Message[]) => {
+  const formattedMessages = messages
+    .map((message) => `${message.sender}: ${message.body}`)
+    .join('\n');
+
+  const participantCount = new Set(messages.map((m) => m.sender)).size;
+  const messageCount = messages.length;
+
+  return JSON.stringify({
+    messages: formattedMessages,
+    participantCount,
+    messageCount,
+  });
 };
