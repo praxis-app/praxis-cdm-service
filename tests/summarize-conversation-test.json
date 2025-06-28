@@ -1,0 +1,22 @@
+{
+  "conversation": {
+    "messages": [
+      {
+        "sender": "Jane",
+        "body": "Hey everyone, where should we go for lunch?"
+      },
+      {
+        "sender": "Sarah",
+        "body": "I think we should go to the pizza place down the street."
+      },
+      {
+        "sender": "John",
+        "body": "That sounds good to me!"
+      },
+      {
+        "sender": "Jane",
+        "body": "Hmm, I'm not sure. I'm not a big fan of pizza."
+      }
+    ]
+  }
+}

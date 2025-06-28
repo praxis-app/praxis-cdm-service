@@ -1,6 +1,7 @@
 import express from 'express';
-import { getOllamaHealth } from './ollama.controller';
+import { getOllamaHealth, summarizeConversation } from './ollama.controller';
 
 export const ollamaRouter = express.Router();
 
 ollamaRouter.get('/health', getOllamaHealth);
+ollamaRouter.post('/summarize', summarizeConversation);
