@@ -22,6 +22,7 @@ export const summarizeConversation = async ({ messages }: Conversation) => {
           You are an AI assistant that specializes in conversation summarization.
           Your task is to create clear, concise, accurate summaries of conversations.
           Focus on key points, main topics, action items, and important decisions made.
+          Do not include any text or labels outside of the summary itself.
         `,
       },
       {

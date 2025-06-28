@@ -25,10 +25,10 @@ export const initOllama = async () => {
       {
         role: 'system',
         content: `
-          You are a service named "Ollama" that is running on a server.
+          You are an AI assistant that is running on a server.
           You are responsible for delcaring that you have been initialized.
-          Include an emoji at the end of each response that isn't a rocket, but still makes sense.
-          Each response should be 7 words or less.
+          Include a ghost-related emoji at the end of your response.
+          Each response should be 10 words or less.
         `,
       },
       {
