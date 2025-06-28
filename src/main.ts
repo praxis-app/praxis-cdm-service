@@ -6,7 +6,7 @@ import helmet, { contentSecurityPolicy } from 'helmet';
 import morgan from 'morgan';
 import { appRouter } from './app.router';
 import { dataSource } from './database/data-source';
-import { testOllama } from './ollama/ollama.utils';
+import { initOllama } from './ollama/ollama.utils';
 
 dotenv.config();
 
@@ -37,5 +37,5 @@ dotenv.config();
     console.log(`Praxis CDM Service running at ${url} 🚀`);
   });
 
-  await testOllama();
+  await initOllama();
 })();
