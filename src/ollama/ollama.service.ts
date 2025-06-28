@@ -1,6 +1,8 @@
 import ollama from 'ollama';
 import { ensureModel } from './ollama.utils';
 
+const MODEL = 'llama3.2:3b';
+
 interface Message {
   sender: string;
   body: string;
@@ -11,18 +13,20 @@ interface Conversation {
 }
 
 export const summarizeConversation = async ({ messages }: Conversation) => {
-  await ensureModel('llama3.1');
+  await ensureModel(MODEL);
 
   const { message } = await ollama.chat({
-    model: 'llama3.1',
+    model: MODEL,
     messages: [
       {
         role: 'system',
         content: `
-          You are an AI assistant that specializes in conversation summarization.
-          Your task is to create clear, concise, accurate summaries of conversations.
-          Focus on key points, main topics, action items, and important decisions made.
-          Do not include any text or labels outside of the summary itself.
+          You are a conversation summarizer. Create a concise summary (2-3 sentences) covering:
+          - Main topics discussed
+          - Key decisions or conclusions
+          - Action items (if any)
+          - Important context
+          Format: Direct summary without labels or prefixes.
         `,
       },
       {
@@ -38,10 +42,10 @@ export const summarizeConversation = async ({ messages }: Conversation) => {
 };
 
 export const getOllamaHealth = async () => {
-  await ensureModel('llama3.1');
+  await ensureModel(MODEL);
 
   const { message } = await ollama.chat({
-    model: 'llama3.1',
+    model: MODEL,
     messages: [
       {
         role: 'system',
