@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { testOllama } from './ollama.utils';
+import * as ollamaService from './ollama.service';
 
 export const getOllamaHealth = async (_: Request, res: Response) => {
-  const payload = await testOllama();
+  const payload = await ollamaService.getOllamaHealth();
   res.json({ message: payload });
 };
