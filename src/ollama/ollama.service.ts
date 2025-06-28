@@ -42,6 +42,7 @@ export const summarizeConversation = async ({ messages }: Conversation) => {
           - Main topics discussed
           - Key decisions or conclusions
           - Action items (if any)
+          - Unresolved issues
           - Important context
           Format: Direct summary without labels or prefixes.
         `,
