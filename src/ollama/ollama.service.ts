@@ -15,6 +15,9 @@ interface Conversation {
 export const summarizeConversation = async ({ messages }: Conversation) => {
   await ensureModel(MODEL);
 
+  // Limit conversation length to avoid excessive processing
+  const recentMessages = messages.slice(-50);
+
   const { message } = await ollama.chat({
     model: MODEL,
     messages: [
@@ -31,7 +34,7 @@ export const summarizeConversation = async ({ messages }: Conversation) => {
       },
       {
         role: 'user',
-        content: `Summarize the following conversation: ${messages
+        content: `Summarize the following conversation: ${recentMessages
           .map((message) => `${message.sender}: ${message.body}`)
           .join('\n')}`,
       },
