@@ -12,6 +12,55 @@ interface Conversation {
   messages: Message[];
 }
 
+// TODO: This is a WIP - always returns false for now
+export const isReadyForProposal = async ({ messages }: Conversation) => {
+  await ensureModel(MODEL);
+
+  // Limit conversation length to avoid excessive processing
+  const recentMessages = messages.slice(-50);
+
+  const formattedMessages = recentMessages
+    .map((message) => `${message.sender}: ${message.body}`)
+    .join('\n');
+
+  // Add metadata to the conversation
+  const participants = Array.from(new Set(recentMessages.map((m) => m.sender)));
+  const participantCount = new Set(recentMessages.map((m) => m.sender)).size;
+  const messageCount = recentMessages.length;
+
+  const formattedConversation = JSON.stringify({
+    messages: formattedMessages,
+    participants,
+    participantCount,
+    messageCount,
+  });
+
+  const { message } = await ollama.chat({
+    model: MODEL,
+    messages: [
+      {
+        role: 'system',
+        content: `
+          You are an AI assistant that determines if a conversation is ready for a proposal.
+          The conversation is a list of messages between participants.
+
+          Return either "true" or "false" and a short explanation.
+        `,
+      },
+      {
+        role: 'user',
+        content: `
+          Is this conversation ready for a proposal?
+
+          ${formattedConversation}
+        `,
+      },
+    ],
+  });
+
+  return message.content.trim(); //.toLowerCase().includes('true');
+};
+
 export const summarizeConversation = async ({ messages }: Conversation) => {
   await ensureModel(MODEL);
 
