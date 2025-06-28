@@ -18,6 +18,20 @@ export const summarizeConversation = async ({ messages }: Conversation) => {
   // Limit conversation length to avoid excessive processing
   const recentMessages = messages.slice(-50);
 
+  const formattedMessages = recentMessages
+    .map((message) => `${message.sender}: ${message.body}`)
+    .join('\n');
+
+  // Add metadata to the conversation
+  const participantCount = new Set(recentMessages.map((m) => m.sender)).size;
+  const messageCount = recentMessages.length;
+
+  const formattedConversation = JSON.stringify({
+    messages: formattedMessages,
+    participantCount,
+    messageCount,
+  });
+
   const { message } = await ollama.chat({
     model: MODEL,
     messages: [
@@ -34,9 +48,10 @@ export const summarizeConversation = async ({ messages }: Conversation) => {
       },
       {
         role: 'user',
-        content: `Summarize the following conversation: ${recentMessages
-          .map((message) => `${message.sender}: ${message.body}`)
-          .join('\n')}`,
+        content: `
+          Summarize this conversation:
+          ${formattedConversation}
+        `,
       },
     ],
   });
