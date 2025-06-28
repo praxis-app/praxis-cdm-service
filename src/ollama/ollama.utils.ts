@@ -1,9 +1,6 @@
-// TODO: Remove once no longer needed for testing
+// TODO: Remove test utils once no longer needed for testing
 
-import * as dotenv from 'dotenv';
 import ollama from 'ollama';
-
-dotenv.config();
 
 export const testOllama = async () => {
   // Test ollama
@@ -25,4 +22,6 @@ export const testOllama = async () => {
     ],
   });
   console.log(response.message.content);
+
+  return response.message.content;
 };
