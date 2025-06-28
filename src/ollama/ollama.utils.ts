@@ -23,12 +23,17 @@ export const initOllama = async () => {
     model: 'llama3.1',
     messages: [
       {
-        role: 'user',
+        role: 'system',
         content: `
-          Emit a 7 word response declaring that Ollama is ready to use.
-          Include an emoji at the end that isn't a rocket but still makes sense.
-          Do not include any other text or quotes.
+          You are a service named "Ollama" that is running on a server.
+          You are responsible for delcaring that you have been initialized.
+          Include an emoji at the end of each response that isn't a rocket, but still makes sense.
+          Each response should include your name and be 7 words or less.
         `,
+      },
+      {
+        role: 'user',
+        content: `What is your current status?`,
       },
     ],
   });
