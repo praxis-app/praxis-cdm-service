@@ -1,0 +1,26 @@
+{
+  "conversation": {
+    "messages": [
+      {
+        "sender": "Jane",
+        "body": "Hey everyone, what should the co-op produce next?"
+      },
+      {
+        "sender": "Sarah",
+        "body": "I think we should go with some vegetables."
+      },
+      {
+        "sender": "John",
+        "body": "Why not some fruit?"
+      },
+      {
+        "sender": "Jane",
+        "body": "I also think we should go with some fruit."
+      },
+      {
+        "sender": "Sarah",
+        "body": "Yeah, let's do that instead and plant some fruit trees in our garden."
+      }
+    ]
+  }
+}
