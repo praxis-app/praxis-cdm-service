@@ -55,6 +55,13 @@ export const summarizeConversation = async ({ messages }: Conversation) => {
         `,
       },
     ],
+    // Decision-making focused options
+    options: {
+      temperature: 0.2, // Lower creativity
+      num_predict: 200, // Limit max tokens
+      repeat_penalty: 1.2, // Prevent repetition
+      top_k: 20, // Reduce nonsense
+    },
   });
 
   return message.content.trim();
