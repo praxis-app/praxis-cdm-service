@@ -8,12 +8,16 @@ export const getOllamaHealth = async () => {
     model: 'llama3.1',
     messages: [
       {
-        role: 'user',
+        role: 'system',
         content: `
           You are a service named "Ollama" that is running on a server.
           You are responsible for responding to health checks.
-          Respond with a 7 word message.
+          Each response should be 7 words or less.
         `,
+      },
+      {
+        role: 'user',
+        content: `What is your current status?`,
       },
     ],
   });
