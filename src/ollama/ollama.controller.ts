@@ -5,9 +5,9 @@ export const isReadyForProposal = async (req: Request, res: Response) => {
   const { conversation } = req.body;
 
   const start = Date.now();
-  const isReady = await ollamaService.isReadyForProposal(conversation);
+  const result = await ollamaService.isReadyForProposal(conversation);
 
-  res.json({ isReady, responseTimeMs: Date.now() - start });
+  res.json({ result, responseTimeMs: Date.now() - start });
 };
 
 export const summarizeConversation = async (req: Request, res: Response) => {

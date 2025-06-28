@@ -1,0 +1,38 @@
+{
+  "conversation": {
+    "messages": [
+      {
+        "sender": "Jane",
+        "body": "We need to decide on our meeting schedule for next quarter"
+      },
+      {
+        "sender": "Maria",
+        "body": "I think weekly meetings might be too frequent given our workload"
+      },
+      {
+        "sender": "John",
+        "body": "What about bi-weekly? That gives us regular touchpoints without being overwhelming"
+      },
+      {
+        "sender": "Jane",
+        "body": "Bi-weekly sounds good to me. We could do Tuesdays"
+      },
+      {
+        "sender": "Maria",
+        "body": "I like the bi-weekly idea. Tuesdays work for me too"
+      },
+      {
+        "sender": "John",
+        "body": "Perfect, so bi-weekly on Tuesdays. Should we set a standard time?"
+      },
+      {
+        "sender": "Jane",
+        "body": "How about 2pm? That avoids the lunch rush"
+      },
+      {
+        "sender": "Maria",
+        "body": "2pm Tuesday bi-weekly works great"
+      }
+    ]
+  }
+}

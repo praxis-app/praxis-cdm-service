@@ -1,7 +1,10 @@
 import ollama from 'ollama';
 import { ensureModel } from './ollama.utils';
 
-const MODEL = 'llama3.2:3b';
+const MODELS = {
+  'Llama 3.1': 'llama3.1',
+  'Llama 3.2 3B': 'llama3.2:3b',
+} as const;
 
 interface Message {
   sender: string;
@@ -12,9 +15,8 @@ interface Conversation {
   messages: Message[];
 }
 
-// TODO: This is a WIP - always returns false for now
 export const isReadyForProposal = async ({ messages }: Conversation) => {
-  await ensureModel(MODEL);
+  await ensureModel(MODELS['Llama 3.1']);
 
   // Limit conversation length to avoid excessive processing
   const recentMessages = messages.slice(-50);
@@ -36,33 +38,72 @@ export const isReadyForProposal = async ({ messages }: Conversation) => {
   });
 
   const { message } = await ollama.chat({
-    model: MODEL,
+    model: MODELS['Llama 3.1'],
     messages: [
       {
         role: 'system',
         content: `
-          You are an AI assistant that determines if a conversation is ready for a proposal.
-          The conversation is a list of messages between participants.
+          You are an AI assistant that helps identify when a discussion is ready for a proposal.
+          
+          A conversation is ready for a proposal when:
+          - There's been sufficient discussion to understand the topic
+          - One or more potential solutions or directions have emerged
+          - There's some level of agreement or convergence among participants
+          - The discussion has reached a natural point where formalizing the decision would be helpful
+          
+          A conversation is NOT ready when:
+          - The topic is still being explored without any clear direction
+          - Participants are still asking clarifying questions
+          - There's active disagreement without any convergence
+          - The discussion just started
+          
+          Return a JSON object with:
+          - "ready": true/false
+          - "reason": a short explanation, 2 sentences or less
 
-          Return either "true" or "false" and a short explanation.
+          Example:
+          {
+            "ready": true,
+            "reason": "Consensus reached"
+          }
         `,
       },
       {
         role: 'user',
         content: `
-          Is this conversation ready for a proposal?
+          Analyze this conversation and determine if it's ready for a proposal:
 
           ${formattedConversation}
         `,
       },
     ],
+    // Decision-making focused options
+    options: {
+      temperature: 0.2, // Lower creativity
+      num_predict: 200, // Limit max tokens
+      repeat_penalty: 1.2, // Prevent repetition
+      top_k: 20, // Reduce nonsense
+    },
   });
 
-  return message.content.trim(); //.toLowerCase().includes('true');
+  try {
+    const response = JSON.parse(message.content);
+    return {
+      isReady: response.ready,
+      reason: response.reason,
+    };
+  } catch (e) {
+    // Fallback parsing if JSON fails
+    const isReady = message.content.toLowerCase().includes('true');
+    return {
+      isReady,
+      reason: message.content,
+    };
+  }
 };
 
 export const summarizeConversation = async ({ messages }: Conversation) => {
-  await ensureModel(MODEL);
+  await ensureModel(MODELS['Llama 3.2 3B']);
 
   // Limit conversation length to avoid excessive processing
   const recentMessages = messages.slice(-50);
@@ -82,7 +123,7 @@ export const summarizeConversation = async ({ messages }: Conversation) => {
   });
 
   const { message } = await ollama.chat({
-    model: MODEL,
+    model: MODELS['Llama 3.2 3B'],
     messages: [
       {
         role: 'system',
@@ -117,10 +158,10 @@ export const summarizeConversation = async ({ messages }: Conversation) => {
 };
 
 export const getOllamaHealth = async () => {
-  await ensureModel(MODEL);
+  await ensureModel(MODELS['Llama 3.2 3B']);
 
   const { message } = await ollama.chat({
-    model: MODEL,
+    model: MODELS['Llama 3.2 3B'],
     messages: [
       {
         role: 'system',
