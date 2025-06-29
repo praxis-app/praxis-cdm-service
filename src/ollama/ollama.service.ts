@@ -51,6 +51,7 @@ export const getCompromises = async ({ messages }: Conversation) => {
       },
     ],
     options: {
+      temperature: 0.1, // Very low for consistent JSON
       num_predict: 500, // Enough for multiple compromises
       repeat_penalty: 1.3, // Prevent repetition
     },
