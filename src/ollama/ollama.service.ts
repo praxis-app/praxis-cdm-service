@@ -26,10 +26,12 @@ export const getCompromises = async ({ messages }: Conversation) => {
           You are an AI assistant that helps identify compromises between
           disagreeing parties in a conversation.
 
-          Return a JSON object with no other text:
-          - "compromises": An array of strings, each representing a compromise. If there
-            are no disagreements or potential compromises, the array should be empty.
-            There should only be one compromise per disagreement.
+          Rules:
+          - Identify realistic compromises between disagreeing parties
+          - Each compromise should be actionable and specific
+          - One compromise per disagreement
+          - Empty array if no compromises possible
+          - Return a valid JSON object with no other text
 
           Example with compromise(s):
           {
