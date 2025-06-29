@@ -1,6 +1,15 @@
 import { Request, Response } from 'express';
 import * as ollamaService from './ollama.service';
 
+export const draftProposal = async (req: Request, res: Response) => {
+  const { conversation } = req.body;
+
+  const start = Date.now();
+  const proposal = await ollamaService.draftProposal(conversation);
+
+  res.json({ proposal, responseTimeMs: Date.now() - start });
+};
+
 export const isReadyForProposal = async (req: Request, res: Response) => {
   const { conversation } = req.body;
 
