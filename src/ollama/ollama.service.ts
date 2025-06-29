@@ -11,9 +11,66 @@ interface Conversation {
   messages: Message[];
 }
 
-export const getConversationDisagreements = async ({
-  messages,
-}: Conversation) => {
+export const getCompromises = async ({ messages }: Conversation) => {
+  await ensureModel(MODELS['Llama 3.1']);
+
+  const recentMessages = messages.slice(-50);
+  const formattedConversation = getFormattedConversation(recentMessages);
+
+  const { message } = await ollama.chat({
+    model: MODELS['Llama 3.1'],
+    messages: [
+      {
+        role: 'system',
+        content: `
+          You are an AI assistant that helps identify compromises between
+          disagreeing parties in a conversation.
+
+          Return a JSON object with no other text:
+          - "compromises": An array of strings, each representing a compromise. If there
+            are no disagreements or potential compromises, the array should be empty.
+            There should only be one compromise per disagreement.
+
+          Example with compromise(s):
+          {
+            "compromises": ["We can grow both vegetables and fruit."]
+          }
+
+          Example with no compromises:
+          {
+            "compromises": []
+          }
+        `,
+      },
+      {
+        role: 'user',
+        content: `
+          Identify potential compromises in this conversation:
+          ${formattedConversation}
+        `,
+      },
+    ],
+    options: {
+      num_predict: 500, // Enough for multiple compromises
+      repeat_penalty: 1.3, // Prevent repetition
+    },
+  });
+
+  try {
+    const response = JSON.parse(message.content);
+    return {
+      compromises: response.compromises,
+    };
+  } catch (e) {
+    // Fallback parsing if JSON fails
+    return {
+      compromises: [],
+      error: JSON.stringify(e),
+    };
+  }
+};
+
+export const getDisagreements = async ({ messages }: Conversation) => {
   await ensureModel(MODELS['Llama 3.1']);
 
   const recentMessages = messages.slice(-50);

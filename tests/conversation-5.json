@@ -1,0 +1,26 @@
+{
+  "conversation": {
+    "messages": [
+      {
+        "sender": "Jane",
+        "body": "We need to pick a team lunch spot for Friday's celebration"
+      },
+      {
+        "sender": "Maria",
+        "body": "I'd love to go to that new Italian place downtown"
+      },
+      {
+        "sender": "John",
+        "body": "Italian sounds heavy for lunch. How about the sushi bar instead?"
+      },
+      {
+        "sender": "Jane",
+        "body": "Both sound good, but we should consider dietary restrictions"
+      },
+      {
+        "sender": "Maria",
+        "body": "Oh right, doesn't Sam have a seafood allergy?"
+      }
+    ]
+  }
+}
