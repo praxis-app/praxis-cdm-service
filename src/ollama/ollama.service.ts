@@ -7,15 +7,15 @@ interface Message {
   body: string;
 }
 
-interface Conversation {
+interface Chat {
   messages: Message[];
 }
 
-export const getCompromises = async ({ messages }: Conversation) => {
+export const getCompromises = async ({ messages }: Chat) => {
   await ensureModel(MODELS['Llama 3.1']);
 
   const recentMessages = messages.slice(-50);
-  const formattedConversation = getFormattedConversation(recentMessages);
+  const formattedChat = getFormattedChat(recentMessages);
 
   const { message } = await ollama.chat({
     model: MODELS['Llama 3.1'],
@@ -48,7 +48,7 @@ export const getCompromises = async ({ messages }: Conversation) => {
         role: 'user',
         content: `
           Identify potential compromises in this conversation:
-          ${formattedConversation}
+          ${formattedChat}
         `,
       },
     ],
@@ -73,11 +73,11 @@ export const getCompromises = async ({ messages }: Conversation) => {
   }
 };
 
-export const getDisagreements = async ({ messages }: Conversation) => {
+export const getDisagreements = async ({ messages }: Chat) => {
   await ensureModel(MODELS['Llama 3.1']);
 
   const recentMessages = messages.slice(-50);
-  const formattedConversation = getFormattedConversation(recentMessages);
+  const formattedChat = getFormattedChat(recentMessages);
 
   const { message } = await ollama.chat({
     model: MODELS['Llama 3.1'],
@@ -109,7 +109,7 @@ export const getDisagreements = async ({ messages }: Conversation) => {
         role: 'user',
         content: `
           Identify disagreements in this conversation:
-          ${formattedConversation}
+          ${formattedChat}
         `,
       },
     ],
@@ -135,11 +135,11 @@ export const getDisagreements = async ({ messages }: Conversation) => {
   }
 };
 
-export const draftProposal = async ({ messages }: Conversation) => {
+export const draftProposal = async ({ messages }: Chat) => {
   await ensureModel(MODELS['Llama 3.1']);
 
   const recentMessages = messages.slice(-50);
-  const formattedConversation = getFormattedConversation(recentMessages);
+  const formattedChat = getFormattedChat(recentMessages);
 
   const { message } = await ollama.chat({
     model: MODELS['Llama 3.1'],
@@ -165,7 +165,7 @@ export const draftProposal = async ({ messages }: Conversation) => {
         role: 'user',
         content: `
           Draft a proposal based on this conversation:
-          ${formattedConversation}
+          ${formattedChat}
         `,
       },
     ],
@@ -187,12 +187,12 @@ export const draftProposal = async ({ messages }: Conversation) => {
   }
 };
 
-export const isReadyForProposal = async ({ messages }: Conversation) => {
+export const isReadyForProposal = async ({ messages }: Chat) => {
   await ensureModel(MODELS['Llama 3.1']);
 
-  // Limit conversation length to avoid excessive processing
+  // Limit message length to avoid excessive processing
   const recentMessages = messages.slice(-50);
-  const formattedConversation = getFormattedConversation(recentMessages);
+  const formattedChat = getFormattedChat(recentMessages);
 
   const { message } = await ollama.chat({
     model: MODELS['Llama 3.1'],
@@ -229,7 +229,7 @@ export const isReadyForProposal = async ({ messages }: Conversation) => {
         role: 'user',
         content: `
           Analyze this conversation and determine if it's ready for a proposal:
-          ${formattedConversation}
+          ${formattedChat}
         `,
       },
     ],
@@ -258,12 +258,12 @@ export const isReadyForProposal = async ({ messages }: Conversation) => {
   }
 };
 
-export const summarizeConversation = async ({ messages }: Conversation) => {
+export const getChatSummary = async ({ messages }: Chat) => {
   await ensureModel(MODELS['Llama 3.2 3B']);
 
-  // Limit conversation length to avoid excessive processing
+  // Limit message length to avoid excessive processing
   const recentMessages = messages.slice(-50);
-  const formattedConversation = getFormattedConversation(recentMessages);
+  const formattedChat = getFormattedChat(recentMessages);
 
   const { message } = await ollama.chat({
     model: MODELS['Llama 3.2 3B'],
@@ -284,7 +284,7 @@ export const summarizeConversation = async ({ messages }: Conversation) => {
         role: 'user',
         content: `
           Summarize this conversation:
-          ${formattedConversation}
+          ${formattedChat}
         `,
       },
     ],
@@ -324,7 +324,7 @@ export const getOllamaHealth = async () => {
   return message.content.trim();
 };
 
-const getFormattedConversation = (messages: Message[]) => {
+const getFormattedChat = (messages: Message[]) => {
   const formattedMessages = messages
     .map((message) => `${message.sender}: ${message.body}`)
     .join('\n');

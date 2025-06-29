@@ -5,13 +5,13 @@ import {
   getDisagreements,
   getOllamaHealth,
   isReadyForProposal,
-  summarizeConversation,
+  getChatSummary,
 } from './ollama.controller';
 
 export const ollamaRouter = express.Router();
 
 ollamaRouter.get('/health', getOllamaHealth);
-ollamaRouter.post('/summarize', summarizeConversation);
+ollamaRouter.post('/summary', getChatSummary);
 ollamaRouter.post('/is-ready-for-proposal', isReadyForProposal);
 ollamaRouter.post('/draft-proposal', draftProposal);
 ollamaRouter.post('/disagreements', getDisagreements);
