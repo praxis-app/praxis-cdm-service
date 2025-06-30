@@ -7,6 +7,7 @@ import { COMPROMISES_PROMPT } from './prompts/compromises.prompt';
 import { DISAGREEMENTS_PROMPT } from './prompts/disagreements.prompt';
 import { DRAFT_PROPOSAL_PROMPT } from './prompts/draft-proposal.prompt';
 import { PROPOSAL_READINESS_PROMPT } from './prompts/proposal-readiness.prompt';
+import { OLLAMA_HEALTH_PROMPT } from './prompts/ollama-health.prompt';
 
 interface Message {
   sender: string;
@@ -111,10 +112,15 @@ export const getChatSummary = async ({ messages }: Chat) => {
   return content.trim();
 };
 
-export const executePrompt = async (
+export const getOllamaHealth = async () => {
+  const content = await executePrompt('Llama 3.1', OLLAMA_HEALTH_PROMPT);
+  return content.trim();
+};
+
+const executePrompt = async (
   model: keyof typeof MODELS,
   { system, user, options }: PromptTemplate,
-  variables: Record<string, string>,
+  variables: Record<string, string> = {},
 ) => {
   await ensureModel(MODELS[model]);
 
@@ -136,30 +142,6 @@ export const executePrompt = async (
   });
 
   return message.content;
-};
-
-export const getOllamaHealth = async () => {
-  await ensureModel(MODELS['Llama 3.2 3B']);
-
-  const { message } = await ollama.chat({
-    model: MODELS['Llama 3.2 3B'],
-    messages: [
-      {
-        role: 'system',
-        content: `
-          You are a service named "Ollama" that is running on a server.
-          You are responsible for responding to health checks.
-          Each response should be 7 words or less.
-        `,
-      },
-      {
-        role: 'user',
-        content: `What is your current status?`,
-      },
-    ],
-  });
-
-  return message.content.trim();
 };
 
 const getFormattedChat = (messages: Message[]) => {
