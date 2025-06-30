@@ -1,7 +1,6 @@
 import ollama from 'ollama';
 import { MODELS } from './ollama.constants';
 import { PromptTemplate } from './ollama.types';
-import { ensureModel } from './ollama.utils';
 import { CHAT_SUMMARY_PROMPT } from './prompts/chat-summary.prompt';
 import { COMPROMISES_PROMPT } from './prompts/compromises.prompt';
 import { DISAGREEMENTS_PROMPT } from './prompts/disagreements.prompt';
@@ -153,6 +152,22 @@ const executePrompt = async (
   });
 
   return message.content;
+};
+
+const ensureModel = async (modelName: string) => {
+  try {
+    const models = await ollama.list();
+    const modelExists = models.models.some(
+      (model) =>
+        model.name === modelName || model.name.startsWith(modelName + ':'),
+    );
+    if (!modelExists) {
+      await ollama.pull({ model: modelName });
+    }
+  } catch (error) {
+    console.error('Error checking/pulling model:', error);
+    throw error;
+  }
 };
 
 const getFormattedChat = (messages: Message[]) => {

@@ -7,6 +7,7 @@ export interface PromptTemplate {
   options?: ChatRequest['options'];
 }
 
+// TODO: Determine if this is needed
 export interface PromptConfig {
   model: keyof typeof MODELS;
   template: PromptTemplate;
