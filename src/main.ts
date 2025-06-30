@@ -6,7 +6,7 @@ import helmet, { contentSecurityPolicy } from 'helmet';
 import morgan from 'morgan';
 import { appRouter } from './app.router';
 import { dataSource } from './database/data-source';
-import { initOllama } from './ollama/ollama.utils';
+import { initOllama } from './ollama/ollama.service';
 
 dotenv.config();
 
