@@ -18,18 +18,21 @@ export const ensureModel = async (modelName: string) => {
 };
 
 export const initOllama = async () => {
-  await ensureModel(MODELS['Gemma 3 1B']);
+  const modelName = 'Gemma 3 1B';
+  const model = MODELS[modelName];
+  await ensureModel(model);
 
+  const timeStart = Date.now();
   const { message } = await ollama.chat({
-    model: MODELS['Gemma 3 1B'],
+    model,
     messages: [
       {
         role: 'system',
         content: `
           You are an AI assistant that is running on a server.
           You are responsible for delcaring that you have been initialized.
-          Include a ghost-related emoji at the end of your response.
-          Each response should be 10 words or less.
+          Include a robot-related emoji at the end of your response.
+          Each response should be 8 words or less with no new lines.
         `,
       },
       {
@@ -38,5 +41,8 @@ export const initOllama = async () => {
       },
     ],
   });
-  console.info(`Ollama: ${message.content.trim()}`);
+
+  const timeEnd = Date.now();
+  const timeTaken = timeEnd - timeStart;
+  console.info(`${modelName}: ${message.content.trim()} - ${timeTaken}ms`);
 };
