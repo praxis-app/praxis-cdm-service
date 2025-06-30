@@ -4,6 +4,7 @@ import { PromptTemplate } from './ollama.types';
 import { ensureModel } from './ollama.utils';
 import { COMPROMISES_PROMPT } from './prompts/compromises.prompt';
 import { DISAGREEMENTS_PROMPT } from './prompts/disagreements.prompt';
+import { DRAFT_PROPOSAL_PROMPT } from './prompts/draft-proposal.prompt';
 
 interface Message {
   sender: string;
@@ -54,47 +55,20 @@ export const draftProposal = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
   const formattedChat = getFormattedChat(recentMessages);
 
-  const { message } = await ollama.chat({
-    model: MODELS['Llama 3.1'],
-    messages: [
-      {
-        role: 'system',
-        content: `
-          You are an AI assistant that helps draft a proposal based on a conversation.
-          The conversation is a list of messages between participants along with some metadata.
-
-          Return a JSON object with no other text:
-          - "title": A short title for the proposal
-          - "description": A short description of the proposal
-
-          Example:
-          {
-            "title": "Meeting Schedule",
-            "description": "We should meet every Tuesday at 2pm"
-          }
-        `,
-      },
-      {
-        role: 'user',
-        content: `
-          Draft a proposal based on this conversation:
-          ${formattedChat}
-        `,
-      },
-    ],
-  });
-
   try {
-    const response = JSON.parse(message.content);
+    const content = await executePrompt('Llama 3.1', DRAFT_PROPOSAL_PROMPT, {
+      formattedChat,
+    });
+    const response = JSON.parse(content);
+
     return {
       title: response.title,
       description: response.description,
     };
   } catch (e) {
-    // Fallback parsing if JSON fails
     return {
-      title: 'Error parsing response from LLM',
-      description: message.content,
+      title: '',
+      description: '',
       error: JSON.stringify(e),
     };
   }
