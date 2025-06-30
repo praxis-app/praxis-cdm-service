@@ -1,4 +1,4 @@
-import { PromptTemplate } from '../ollama.types';
+import { PromptTemplate } from '../../ollama/ollama.types';
 
 export const DISAGREEMENTS_PROMPT: PromptTemplate = {
   system: `

@@ -1,4 +1,4 @@
-import { PromptTemplate } from '../ollama.types';
+import { PromptTemplate } from '../../ollama/ollama.types';
 
 export const PROPOSAL_READINESS_PROMPT: PromptTemplate = {
   system: `

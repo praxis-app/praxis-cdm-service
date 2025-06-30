@@ -1,4 +1,4 @@
-import { PromptTemplate } from '../ollama.types';
+import { PromptTemplate } from '../../ollama/ollama.types';
 
 export const CHAT_SUMMARY_PROMPT: PromptTemplate = {
   system: `
