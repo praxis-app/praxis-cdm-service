@@ -2,6 +2,7 @@ import ollama from 'ollama';
 import { MODELS } from './ollama.constants';
 import { PromptTemplate } from './ollama.types';
 import { ensureModel } from './ollama.utils';
+import { CHAT_SUMMARY_PROMPT } from './prompts/chat-summary.prompt';
 import { COMPROMISES_PROMPT } from './prompts/compromises.prompt';
 import { DISAGREEMENTS_PROMPT } from './prompts/disagreements.prompt';
 import { DRAFT_PROPOSAL_PROMPT } from './prompts/draft-proposal.prompt';
@@ -103,39 +104,11 @@ export const getChatSummary = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
   const formattedChat = getFormattedChat(recentMessages);
 
-  const { message } = await ollama.chat({
-    model: MODELS['Llama 3.2 3B'],
-    messages: [
-      {
-        role: 'system',
-        content: `
-          You are a conversation summarizer. Create a concise summary (2-3 sentences) covering:
-          - Main topics discussed
-          - Key decisions or conclusions
-          - Action items (if any)
-          - Unresolved issues
-          - Important context
-          Format: Direct summary without labels or prefixes.
-        `,
-      },
-      {
-        role: 'user',
-        content: `
-          Summarize this conversation:
-          ${formattedChat}
-        `,
-      },
-    ],
-    // Decision-making focused options
-    options: {
-      temperature: 0.2, // Lower creativity
-      num_predict: 200, // Limit max tokens
-      repeat_penalty: 1.2, // Prevent repetition
-      top_k: 20, // Reduce nonsense
-    },
+  const content = await executePrompt('Llama 3.2 3B', CHAT_SUMMARY_PROMPT, {
+    formattedChat,
   });
 
-  return message.content.trim();
+  return content.trim();
 };
 
 export const executePrompt = async (
