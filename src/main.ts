@@ -11,6 +11,8 @@ import { initOllama } from './ollama/ollama.utils';
 dotenv.config();
 
 (async () => {
+  const startTime = Date.now();
+
   const app = express();
   const port = process.env.PORT;
 
@@ -34,7 +36,8 @@ dotenv.config();
 
   app.listen(port, () => {
     const url = `http://localhost:${port}`;
-    console.log(`Praxis CDM Service running at ${url} 🚀`);
+    const timeTaken = Date.now() - startTime;
+    console.info(`Praxis CDM Service running at ${url} 🚀 - ${timeTaken}ms`);
   });
 
   await initOllama();

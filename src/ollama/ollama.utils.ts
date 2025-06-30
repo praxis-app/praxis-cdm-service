@@ -31,15 +31,18 @@ export const initOllama = async () => {
         content: `
           You are an AI assistant that is running on a server.
           You are responsible for delcaring that you have been initialized.
-          Include a robot-related emoji at the end of your response.
           Each response should be 8 words or less with no new lines.
+          Include a sparkly emoji at the end of your response.
         `,
       },
       {
         role: 'user',
-        content: `What is your current status?`,
+        content: `What is your status?`,
       },
     ],
+    options: {
+      temperature: 1.5,
+    },
   });
 
   const timeEnd = Date.now();
