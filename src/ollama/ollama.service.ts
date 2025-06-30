@@ -1,6 +1,8 @@
 import ollama from 'ollama';
 import { MODELS } from './ollama.constants';
+import { PromptTemplate } from './ollama.types';
 import { ensureModel } from './ollama.utils';
+import { COMPROMISES_PROMPT } from './prompts/compromises.prompt';
 
 interface Message {
   sender: string;
@@ -12,64 +14,18 @@ interface Chat {
 }
 
 export const getCompromises = async ({ messages }: Chat) => {
-  await ensureModel(MODELS['Llama 3.1']);
-
   const recentMessages = messages.slice(-50);
   const formattedChat = getFormattedChat(recentMessages);
 
-  const { message } = await ollama.chat({
-    model: MODELS['Llama 3.1'],
-    messages: [
-      {
-        role: 'system',
-        content: `
-          You are an AI assistant that helps identify compromises between
-          disagreeing parties in a conversation.
-
-          Rules:
-          - Identify realistic compromises between disagreeing parties
-          - Each compromise should be actionable and specific
-          - One compromise per disagreement
-          - Empty array if no compromises possible
-          - Return a valid JSON object with no other text
-
-          Example with compromise(s):
-          {
-            "compromises": ["We can grow both vegetables and fruit."]
-          }
-
-          Example with no compromises:
-          {
-            "compromises": []
-          }
-        `,
-      },
-      {
-        role: 'user',
-        content: `
-          Identify potential compromises in this conversation:
-          ${formattedChat}
-        `,
-      },
-    ],
-    options: {
-      temperature: 0.1, // Very low for consistent JSON
-      num_predict: 500, // Enough for multiple compromises
-      repeat_penalty: 1.3, // Prevent repetition
-    },
-  });
-
   try {
-    const response = JSON.parse(message.content);
-    return {
-      compromises: response.compromises,
-    };
+    const content = await executePrompt('Llama 3.1', COMPROMISES_PROMPT, {
+      formattedChat,
+    });
+    const response = JSON.parse(content);
+
+    return { compromises: response.compromises };
   } catch (e) {
-    // Fallback parsing if JSON fails
-    return {
-      compromises: [],
-      error: JSON.stringify(e),
-    };
+    return { compromises: [], error: JSON.stringify(e) };
   }
 };
 
@@ -298,6 +254,33 @@ export const getChatSummary = async ({ messages }: Chat) => {
   });
 
   return message.content.trim();
+};
+
+export const executePrompt = async (
+  model: keyof typeof MODELS,
+  { system, user, options }: PromptTemplate,
+  variables: Record<string, string>,
+) => {
+  await ensureModel(MODELS[model]);
+
+  // Replace variables in user prompt
+  const userContent = Object.entries(variables).reduce(
+    (content, [key, value]) => content.replace(`{${key}}`, value),
+    user,
+  );
+
+  const messages = [
+    ...(system ? [{ role: 'system', content: system }] : []),
+    { role: 'user', content: userContent },
+  ];
+
+  const { message } = await ollama.chat({
+    model: MODELS[model],
+    messages,
+    options,
+  });
+
+  return message.content;
 };
 
 export const getOllamaHealth = async () => {
