@@ -6,8 +6,9 @@ import { CHAT_SUMMARY_PROMPT } from './prompts/chat-summary.prompt';
 import { COMPROMISES_PROMPT } from './prompts/compromises.prompt';
 import { DISAGREEMENTS_PROMPT } from './prompts/disagreements.prompt';
 import { DRAFT_PROPOSAL_PROMPT } from './prompts/draft-proposal.prompt';
-import { PROPOSAL_READINESS_PROMPT } from './prompts/proposal-readiness.prompt';
+import { INIT_OLLAMA_PROMPT } from './prompts/init-ollama.prompt';
 import { OLLAMA_HEALTH_PROMPT } from './prompts/ollama-health.prompt';
+import { PROPOSAL_READINESS_PROMPT } from './prompts/proposal-readiness.prompt';
 
 interface Message {
   sender: string;
@@ -118,36 +119,13 @@ export const getOllamaHealth = async () => {
 };
 
 export const initOllama = async () => {
+  const start = Date.now();
   const modelName = 'Gemma 3 1B';
-  const model = MODELS[modelName];
-  await ensureModel(model);
+  const content = await executePrompt(modelName, INIT_OLLAMA_PROMPT);
 
-  const timeStart = Date.now();
-  const { message } = await ollama.chat({
-    model,
-    messages: [
-      {
-        role: 'system',
-        content: `
-          You are an AI assistant that is running on a server.
-          You are responsible for delcaring that you have been initialized.
-          Each response should be 8 words or less with no new lines.
-          Include a sparkly emoji at the end of your response.
-        `,
-      },
-      {
-        role: 'user',
-        content: `What is your status?`,
-      },
-    ],
-    options: {
-      temperature: 1.5,
-    },
-  });
-
-  const timeEnd = Date.now();
-  const timeTaken = timeEnd - timeStart;
-  console.info(`${modelName}: ${message.content.trim()} - ${timeTaken}ms`);
+  const end = Date.now();
+  const duration = end - start;
+  console.info(`${modelName}: ${content.trim()} - ${duration}ms`);
 };
 
 const executePrompt = async (
