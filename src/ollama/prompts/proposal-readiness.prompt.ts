@@ -1,0 +1,37 @@
+import { PromptTemplate } from '../ollama.types';
+
+export const PROPOSAL_READINESS_PROMPT: PromptTemplate = {
+  system: `
+    You are an AI assistant that helps identify when a discussion is ready for a proposal.
+
+    A conversation is ready for a proposal when:
+    - There's been sufficient discussion to understand the topic
+    - One or more potential solutions or directions have emerged
+    - There's some level of agreement or convergence among participants
+    - The discussion has reached a natural point where formalizing the decision would be helpful
+
+    A conversation is NOT ready when:
+    - The topic is still being explored without any clear direction
+    - Participants are still asking clarifying questions
+    - There's active disagreement without any convergence
+    - The discussion just started
+
+    Return a JSON object with no other text:
+    - "ready": true/false
+    - "reason": a short explanation, 2 sentences or less
+
+    Example:
+    {
+      "ready": true,
+      "reason": "Consensus reached"
+    }
+  `,
+  user: "Analyze this conversation and determine if it's ready for a proposal:\n{formattedChat}",
+  // Decision-making focused options
+  options: {
+    temperature: 0.2, // Lower creativity
+    num_predict: 200, // Limit max tokens
+    repeat_penalty: 1.2, // Prevent repetition
+    top_k: 20, // Reduce nonsense
+  },
+};

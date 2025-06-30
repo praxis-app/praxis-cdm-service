@@ -5,6 +5,7 @@ import { ensureModel } from './ollama.utils';
 import { COMPROMISES_PROMPT } from './prompts/compromises.prompt';
 import { DISAGREEMENTS_PROMPT } from './prompts/disagreements.prompt';
 import { DRAFT_PROPOSAL_PROMPT } from './prompts/draft-proposal.prompt';
+import { PROPOSAL_READINESS_PROMPT } from './prompts/proposal-readiness.prompt';
 
 interface Message {
   sender: string;
@@ -32,8 +33,6 @@ export const getCompromises = async ({ messages }: Chat) => {
 };
 
 export const getDisagreements = async ({ messages }: Chat) => {
-  await ensureModel(MODELS['Llama 3.1']);
-
   const recentMessages = messages.slice(-50);
   const formattedChat = getFormattedChat(recentMessages);
 
@@ -50,8 +49,6 @@ export const getDisagreements = async ({ messages }: Chat) => {
 };
 
 export const draftProposal = async ({ messages }: Chat) => {
-  await ensureModel(MODELS['Llama 3.1']);
-
   const recentMessages = messages.slice(-50);
   const formattedChat = getFormattedChat(recentMessages);
 
@@ -75,72 +72,26 @@ export const draftProposal = async ({ messages }: Chat) => {
 };
 
 export const isReadyForProposal = async ({ messages }: Chat) => {
-  await ensureModel(MODELS['Llama 3.1']);
-
-  // Limit message length to avoid excessive processing
   const recentMessages = messages.slice(-50);
   const formattedChat = getFormattedChat(recentMessages);
 
-  const { message } = await ollama.chat({
-    model: MODELS['Llama 3.1'],
-    messages: [
-      {
-        role: 'system',
-        content: `
-          You are an AI assistant that helps identify when a discussion is ready for a proposal.
-          
-          A conversation is ready for a proposal when:
-          - There's been sufficient discussion to understand the topic
-          - One or more potential solutions or directions have emerged
-          - There's some level of agreement or convergence among participants
-          - The discussion has reached a natural point where formalizing the decision would be helpful
-          
-          A conversation is NOT ready when:
-          - The topic is still being explored without any clear direction
-          - Participants are still asking clarifying questions
-          - There's active disagreement without any convergence
-          - The discussion just started
-          
-          Return a JSON object with:
-          - "ready": true/false
-          - "reason": a short explanation, 2 sentences or less
-
-          Example:
-          {
-            "ready": true,
-            "reason": "Consensus reached"
-          }
-        `,
-      },
-      {
-        role: 'user',
-        content: `
-          Analyze this conversation and determine if it's ready for a proposal:
-          ${formattedChat}
-        `,
-      },
-    ],
-    // Decision-making focused options
-    options: {
-      temperature: 0.2, // Lower creativity
-      num_predict: 200, // Limit max tokens
-      repeat_penalty: 1.2, // Prevent repetition
-      top_k: 20, // Reduce nonsense
-    },
-  });
-
   try {
-    const response = JSON.parse(message.content);
+    const content = await executePrompt(
+      'Llama 3.1',
+      PROPOSAL_READINESS_PROMPT,
+      { formattedChat },
+    );
+    const response = JSON.parse(content);
+
     return {
       isReady: response.ready,
       reason: response.reason,
     };
   } catch (e) {
-    // Fallback parsing if JSON fails
-    const isReady = message.content.toLowerCase().includes('true');
     return {
-      isReady,
-      reason: message.content,
+      isReady: false,
+      reason: 'Failed to parse JSON from LLM',
+      error: JSON.stringify(e),
     };
   }
 };
