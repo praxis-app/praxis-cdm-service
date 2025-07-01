@@ -26,68 +26,17 @@ interface Chat {
   messages: Message[];
 }
 
-export const getCompromises = async ({ messages }: Chat) => {
+export const getChatSummary = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
   const chatData = shapeChatData(recentMessages);
 
-  try {
-    const content = await executePrompt({
-      model: 'llama3.1',
-      template: COMPROMISES_PROMPT,
-      variables: { chatData },
-    });
-    const parsedContent = JSON.parse(content);
-    const response = compromisesSchema.parse(parsedContent);
+  const content = await executePrompt({
+    model: 'llama3.2:3b',
+    template: CHAT_SUMMARY_PROMPT,
+    variables: { chatData },
+  });
 
-    return { compromises: response.compromises };
-  } catch (e) {
-    return { compromises: [], error: JSON.stringify(e) };
-  }
-};
-
-export const getDisagreements = async ({ messages }: Chat) => {
-  const recentMessages = messages.slice(-50);
-  const chatData = shapeChatData(recentMessages);
-
-  try {
-    const content = await executePrompt({
-      model: 'llama3.1',
-      template: DISAGREEMENTS_PROMPT,
-      variables: { chatData },
-    });
-    const parsedContent = JSON.parse(content);
-    const response = disagreementsSchema.parse(parsedContent);
-
-    return { disagreements: response.disagreements };
-  } catch (e) {
-    return { disagreements: [], error: JSON.stringify(e) };
-  }
-};
-
-export const draftProposal = async ({ messages }: Chat) => {
-  const recentMessages = messages.slice(-50);
-  const chatData = shapeChatData(recentMessages);
-
-  try {
-    const content = await executePrompt({
-      model: 'llama3.1',
-      template: DRAFT_PROPOSAL_PROMPT,
-      variables: { chatData },
-    });
-    const parsedContent = JSON.parse(content);
-    const response = draftProposalSchema.parse(parsedContent);
-
-    return {
-      title: response.title,
-      description: response.description,
-    };
-  } catch (e) {
-    return {
-      title: '',
-      description: '',
-      error: JSON.stringify(e),
-    };
-  }
+  return content.trim();
 };
 
 export const isReadyForProposal = async ({ messages }: Chat) => {
@@ -116,17 +65,68 @@ export const isReadyForProposal = async ({ messages }: Chat) => {
   }
 };
 
-export const getChatSummary = async ({ messages }: Chat) => {
+export const getDisagreements = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
   const chatData = shapeChatData(recentMessages);
 
-  const content = await executePrompt({
-    model: 'llama3.2:3b',
-    template: CHAT_SUMMARY_PROMPT,
-    variables: { chatData },
-  });
+  try {
+    const content = await executePrompt({
+      model: 'llama3.1',
+      template: DISAGREEMENTS_PROMPT,
+      variables: { chatData },
+    });
+    const parsedContent = JSON.parse(content);
+    const response = disagreementsSchema.parse(parsedContent);
 
-  return content.trim();
+    return { disagreements: response.disagreements };
+  } catch (e) {
+    return { disagreements: [], error: JSON.stringify(e) };
+  }
+};
+
+export const getCompromises = async ({ messages }: Chat) => {
+  const recentMessages = messages.slice(-50);
+  const chatData = shapeChatData(recentMessages);
+
+  try {
+    const content = await executePrompt({
+      model: 'llama3.1',
+      template: COMPROMISES_PROMPT,
+      variables: { chatData },
+    });
+    const parsedContent = JSON.parse(content);
+    const response = compromisesSchema.parse(parsedContent);
+
+    return { compromises: response.compromises };
+  } catch (e) {
+    return { compromises: [], error: JSON.stringify(e) };
+  }
+};
+
+export const draftProposal = async ({ messages }: Chat) => {
+  const recentMessages = messages.slice(-50);
+  const chatData = shapeChatData(recentMessages);
+
+  try {
+    const content = await executePrompt({
+      model: 'llama3.1',
+      template: DRAFT_PROPOSAL_PROMPT,
+      variables: { chatData },
+    });
+    const parsedContent = JSON.parse(content);
+    const response = draftProposalSchema.parse(parsedContent);
+
+    return {
+      title: response.title,
+      description: response.description,
+    };
+  } catch (e) {
+    return {
+      title: '',
+      description: '',
+      error: JSON.stringify(e),
+    };
+  }
 };
 
 const shapeChatData = (messages: Message[]) => {
