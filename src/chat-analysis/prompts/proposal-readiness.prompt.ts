@@ -25,9 +25,14 @@ export const PROPOSAL_READINESS_PROMPT: PromptTemplate = {
     - There's active disagreement without any convergence
     - The discussion just started
 
+    IMPORTANT: Track the conversation chronologically. Pay special attention to:
+    - Words like "instead", "rather than", "actually", "let's do that" which indicate participants changing their minds
+    - The FINAL consensus, not initial suggestions that were later abandoned
+    - What participants ultimately agreed on at the END of the conversation
+
     Return a JSON object with no other text:
     - "ready": true/false
-    - "reason": a short explanation, 2 sentences or less
+    - "reason": a short explanation about readiness AND what was agreed upon, 2 sentences or less
 
     Example:
     {
@@ -38,8 +43,7 @@ export const PROPOSAL_READINESS_PROMPT: PromptTemplate = {
   user: "Analyze this conversation and determine if it's ready for a proposal:\n{chatData}",
   // Decision-making focused options
   options: {
-    temperature: 0.2, // Lower creativity
-    num_predict: 200, // Limit max tokens
+    temperature: 0.1, // Lower creativity
     repeat_penalty: 1.2, // Prevent repetition
     top_k: 20, // Reduce nonsense
   },
