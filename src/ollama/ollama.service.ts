@@ -2,7 +2,6 @@ import ollama from 'ollama';
 import { Model, PromptConfig } from './ollama.types';
 import { INIT_OLLAMA_PROMPT } from './prompts/init-ollama.prompt';
 import { OLLAMA_HEALTH_PROMPT } from './prompts/ollama-health.prompt';
-import { MODELS } from './ollama.constants';
 
 /**
  * In-memory cache of verified Ollama models.
@@ -69,15 +68,14 @@ const ensureModel = async (model: Model) => {
 
 export const getOllamaInitMessage = async () => {
   const start = Date.now();
-  const model = 'Gemma 3 1B';
   const content = await executePrompt({
-    model: MODELS[model],
+    model: 'gemma3:1b',
     template: INIT_OLLAMA_PROMPT,
   });
 
   const end = Date.now();
   const duration = end - start;
-  return `${model}: ${content.trim()} - ${duration}ms`;
+  return `Gemma 3 1B: ${content.trim()} - ${duration}ms`;
 };
 
 export const getOllamaHealth = async () => {
