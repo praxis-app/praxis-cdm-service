@@ -8,7 +8,10 @@ import {
   DISAGREEMENTS_PROMPT,
   disagreementsSchema,
 } from './prompts/disagreements.prompt';
-import { DRAFT_PROPOSAL_PROMPT } from './prompts/draft-proposal.prompt';
+import {
+  DRAFT_PROPOSAL_PROMPT,
+  draftProposalSchema,
+} from './prompts/draft-proposal.prompt';
 import { PROPOSAL_READINESS_PROMPT } from './prompts/proposal-readiness.prompt';
 
 interface Message {
@@ -68,7 +71,8 @@ export const draftProposal = async ({ messages }: Chat) => {
       template: DRAFT_PROPOSAL_PROMPT,
       variables: { chatData },
     });
-    const response = JSON.parse(content);
+    const parsedContent = JSON.parse(content);
+    const response = draftProposalSchema.parse(parsedContent);
 
     return {
       title: response.title,

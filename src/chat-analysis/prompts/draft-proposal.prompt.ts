@@ -1,4 +1,11 @@
+import { z } from 'zod';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 import { PromptTemplate } from '../../ollama/ollama.types';
+
+export const draftProposalSchema = z.object({
+  title: z.string().describe('A short title for the proposal'),
+  description: z.string().describe('A short description of the proposal'),
+});
 
 export const DRAFT_PROPOSAL_PROMPT: PromptTemplate = {
   system: `
@@ -16,4 +23,5 @@ export const DRAFT_PROPOSAL_PROMPT: PromptTemplate = {
     }
   `,
   user: 'Draft a proposal based on this conversation:\n{chatData}',
+  format: zodToJsonSchema(draftProposalSchema),
 };
