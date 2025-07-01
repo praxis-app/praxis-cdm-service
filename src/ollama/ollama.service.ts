@@ -9,14 +9,14 @@ export const getOllamaHealth = async () => {
   return content.trim();
 };
 
-export const initOllama = async () => {
+export const getOllamaInitMessage = async () => {
   const start = Date.now();
   const modelName = 'Gemma 3 1B';
   const content = await executePrompt(modelName, INIT_OLLAMA_PROMPT);
 
   const end = Date.now();
   const duration = end - start;
-  console.info(`${modelName}: ${content.trim()} - ${duration}ms`);
+  return `${modelName}: ${content.trim()} - ${duration}ms`;
 };
 
 export const executePrompt = async (
