@@ -5,7 +5,7 @@ import { INIT_OLLAMA_PROMPT } from './prompts/init-ollama.prompt';
 import { OLLAMA_HEALTH_PROMPT } from './prompts/ollama-health.prompt';
 
 export const getOllamaHealth = async () => {
-  const content = await executePrompt('Llama 3.1', OLLAMA_HEALTH_PROMPT);
+  const content = await executePrompt('Llama 3.2 1B', OLLAMA_HEALTH_PROMPT);
   return content.trim();
 };
 
