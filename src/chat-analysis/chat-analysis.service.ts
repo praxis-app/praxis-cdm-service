@@ -31,7 +31,7 @@ export const getChatSummary = async ({ messages }: Chat) => {
   const chatData = shapeChatData(recentMessages);
 
   const content = await executePrompt({
-    model: 'llama3.1',
+    model: 'llama3.1:8b',
     template: CHAT_SUMMARY_PROMPT,
     variables: { chatData },
   });
@@ -45,7 +45,7 @@ export const isReadyForProposal = async ({ messages }: Chat) => {
 
   try {
     const content = await executePrompt({
-      model: 'llama3.1',
+      model: 'llama3.1:8b',
       template: PROPOSAL_READINESS_PROMPT,
       variables: { chatData },
     });
@@ -71,7 +71,7 @@ export const getDisagreements = async ({ messages }: Chat) => {
 
   try {
     const content = await executePrompt({
-      model: 'llama3.1',
+      model: 'llama3.1:8b',
       template: DISAGREEMENTS_PROMPT,
       variables: { chatData },
     });
@@ -90,7 +90,7 @@ export const getCompromises = async ({ messages }: Chat) => {
 
   try {
     const content = await executePrompt({
-      model: 'llama3.1',
+      model: 'llama3.1:8b',
       template: COMPROMISES_PROMPT,
       variables: { chatData },
     });
@@ -109,7 +109,7 @@ export const draftProposal = async ({ messages }: Chat) => {
 
   try {
     const content = await executePrompt({
-      model: 'llama3.1',
+      model: 'llama3.1:8b',
       template: DRAFT_PROPOSAL_PROMPT,
       variables: { chatData },
     });

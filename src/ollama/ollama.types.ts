@@ -2,8 +2,8 @@ import { ChatRequest } from 'ollama';
 
 /** Ollama models that are currently leveraged by the service. */
 export type Model =
-  // "State of the art" model, defaults to 8B - https://ollama.com/library/llama3.1
-  | 'llama3.1'
+  // "State of the art" model - https://ollama.com/library/llama3.1:8b
+  | 'llama3.1:8b'
   // A lightweight text only model - https://ollama.com/library/llama3.2:1b
   | 'llama3.2:1b'
   // A very small text only model, runs on a single GPU - https://ollama.com/library/gemma3:1b
