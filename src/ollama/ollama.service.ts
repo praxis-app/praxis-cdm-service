@@ -54,7 +54,12 @@ const ensureModel = async (modelName: string) => {
         model.name === modelName || model.name.startsWith(modelName + ':'),
     );
     if (!modelExists) {
+      const start = Date.now();
+      console.info(`Pulling model: ${modelName}`);
       await ollama.pull({ model: modelName });
+
+      const duration = Date.now() - start;
+      console.info(`Model pulled in ${duration}ms: ${modelName}`);
     }
   } catch (error) {
     console.error('Error checking/pulling model:', error);
