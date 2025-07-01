@@ -1,3 +1,5 @@
+// TODO: Determine whether models should be defined
+// as a union type instead of an object
 export const MODELS = {
   'Llama 3.1': 'llama3.1',
   'Llama 3.2 1B': 'llama3.2:1b',
