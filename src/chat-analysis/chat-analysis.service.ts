@@ -31,7 +31,7 @@ export const getChatSummary = async ({ messages }: Chat) => {
   const chatData = shapeChatData(recentMessages);
 
   const content = await executePrompt({
-    model: 'llama3.2:3b',
+    model: 'llama3.1',
     template: CHAT_SUMMARY_PROMPT,
     variables: { chatData },
   });
