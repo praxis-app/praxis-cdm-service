@@ -19,7 +19,7 @@ export const getCompromises = async ({ messages }: Chat) => {
   const formattedChat = getFormattedChat(recentMessages);
 
   try {
-    const content = await executePrompt('Llama 3.1', COMPROMISES_PROMPT, {
+    const content = await executePrompt('llama3.1', COMPROMISES_PROMPT, {
       formattedChat,
     });
     const response = JSON.parse(content);
@@ -35,7 +35,7 @@ export const getDisagreements = async ({ messages }: Chat) => {
   const formattedChat = getFormattedChat(recentMessages);
 
   try {
-    const content = await executePrompt('Llama 3.1', DISAGREEMENTS_PROMPT, {
+    const content = await executePrompt('llama3.1', DISAGREEMENTS_PROMPT, {
       formattedChat,
     });
     const response = JSON.parse(content);
@@ -51,7 +51,7 @@ export const draftProposal = async ({ messages }: Chat) => {
   const formattedChat = getFormattedChat(recentMessages);
 
   try {
-    const content = await executePrompt('Llama 3.1', DRAFT_PROPOSAL_PROMPT, {
+    const content = await executePrompt('llama3.1', DRAFT_PROPOSAL_PROMPT, {
       formattedChat,
     });
     const response = JSON.parse(content);
@@ -74,11 +74,9 @@ export const isReadyForProposal = async ({ messages }: Chat) => {
   const formattedChat = getFormattedChat(recentMessages);
 
   try {
-    const content = await executePrompt(
-      'Llama 3.1',
-      PROPOSAL_READINESS_PROMPT,
-      { formattedChat },
-    );
+    const content = await executePrompt('llama3.1', PROPOSAL_READINESS_PROMPT, {
+      formattedChat,
+    });
     const response = JSON.parse(content);
 
     return {
@@ -98,7 +96,7 @@ export const getChatSummary = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
   const formattedChat = getFormattedChat(recentMessages);
 
-  const content = await executePrompt('Llama 3.2 3B', CHAT_SUMMARY_PROMPT, {
+  const content = await executePrompt('llama3.2:3b', CHAT_SUMMARY_PROMPT, {
     formattedChat,
   });
 

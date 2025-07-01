@@ -1,5 +1,4 @@
 import { ChatRequest } from 'ollama';
-import { MODELS } from './ollama.constants';
 
 export interface PromptTemplate {
   system?: string;
@@ -9,6 +8,6 @@ export interface PromptTemplate {
 
 // TODO: Determine if this is needed
 export interface PromptConfig {
-  model: keyof typeof MODELS;
+  model: string;
   template: PromptTemplate;
 }

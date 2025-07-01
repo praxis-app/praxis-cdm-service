@@ -1,8 +1,10 @@
 import ollama from 'ollama';
-import { MODELS } from './ollama.constants';
 import { PromptTemplate } from './ollama.types';
 import { INIT_OLLAMA_PROMPT } from './prompts/init-ollama.prompt';
 import { OLLAMA_HEALTH_PROMPT } from './prompts/ollama-health.prompt';
+import { MODELS } from './ollama.constants';
+
+type Model = (typeof MODELS)[keyof typeof MODELS];
 
 /**
  * In-memory cache of verified Ollama models.
@@ -12,29 +14,14 @@ import { OLLAMA_HEALTH_PROMPT } from './prompts/ollama-health.prompt';
  * Without this cache, we would need to call `ollama.list()` on every
  * request to verify model availability.
  */
-const verifiedModels = new Set<string>();
-
-export const getOllamaHealth = async () => {
-  const content = await executePrompt('Llama 3.2 1B', OLLAMA_HEALTH_PROMPT);
-  return content.trim();
-};
-
-export const getOllamaInitMessage = async () => {
-  const start = Date.now();
-  const modelName = 'Gemma 3 1B';
-  const content = await executePrompt(modelName, INIT_OLLAMA_PROMPT);
-
-  const end = Date.now();
-  const duration = end - start;
-  return `${modelName}: ${content.trim()} - ${duration}ms`;
-};
+const verifiedModels = new Set<Model>();
 
 export const executePrompt = async (
-  model: keyof typeof MODELS,
+  model: Model,
   { system, user, options }: PromptTemplate,
   variables: Record<string, string> = {},
 ) => {
-  await ensureModel(MODELS[model]);
+  await ensureModel(model);
 
   // Replace variables in user prompt
   const userContent = Object.entries(variables).reduce(
@@ -48,7 +35,7 @@ export const executePrompt = async (
   ];
 
   const { message } = await ollama.chat({
-    model: MODELS[model],
+    model,
     messages,
     options,
   });
@@ -56,7 +43,7 @@ export const executePrompt = async (
   return message.content;
 };
 
-const ensureModel = async (model: string) => {
+const ensureModel = async (model: Model) => {
   // If the model is already verified, bail
   if (verifiedModels.has(model)) {
     return;
@@ -80,4 +67,19 @@ const ensureModel = async (model: string) => {
     console.error('Error checking/pulling model:', error);
     throw error;
   }
+};
+
+export const getOllamaInitMessage = async () => {
+  const start = Date.now();
+  const model = 'Gemma 3 1B';
+  const content = await executePrompt(MODELS[model], INIT_OLLAMA_PROMPT);
+
+  const end = Date.now();
+  const duration = end - start;
+  return `${model}: ${content.trim()} - ${duration}ms`;
+};
+
+export const getOllamaHealth = async () => {
+  const content = await executePrompt('llama3.2:1b', OLLAMA_HEALTH_PROMPT);
+  return content.trim();
 };
