@@ -10,7 +10,7 @@ export const CHAT_SUMMARY_PROMPT: PromptTemplate = {
     - Important context
     Format: Direct summary without labels or prefixes.
   `,
-  user: 'Summarize this conversation:\n{formattedChat}',
+  user: 'Summarize this conversation:\n{chatData}',
   // Decision-making focused options
   options: {
     temperature: 0.2, // Lower creativity

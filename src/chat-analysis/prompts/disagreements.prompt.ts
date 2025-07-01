@@ -1,4 +1,10 @@
+import { z } from 'zod';
 import { PromptTemplate } from '../../ollama/ollama.types';
+import { zodToJsonSchema } from 'zod-to-json-schema';
+
+export const disagreementsSchema = z.object({
+  disagreements: z.string().array().describe('An array of disagreements'),
+});
 
 export const DISAGREEMENTS_PROMPT: PromptTemplate = {
   system: `
@@ -21,11 +27,12 @@ export const DISAGREEMENTS_PROMPT: PromptTemplate = {
       "disagreements": []
     }
   `,
-  user: 'Identify any disagreements in this conversation:\n{formattedChat}',
+  user: 'Identify any disagreements in this conversation:\n{chatData}',
   options: {
     temperature: 0.1, // Very low for consistent JSON
     num_predict: 500, // Enough for multiple disagreements
     top_k: 10, // Narrow choices for structured output
     top_p: 0.8, // Further restrict token selection
   },
+  format: zodToJsonSchema(disagreementsSchema),
 };

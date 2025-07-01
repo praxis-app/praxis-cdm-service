@@ -1,9 +1,21 @@
 import { executePrompt } from '../ollama/ollama.service';
 import { CHAT_SUMMARY_PROMPT } from './prompts/chat-summary.prompt';
-import { COMPROMISES_PROMPT } from './prompts/compromises.prompt';
-import { DISAGREEMENTS_PROMPT } from './prompts/disagreements.prompt';
-import { DRAFT_PROPOSAL_PROMPT } from './prompts/draft-proposal.prompt';
-import { PROPOSAL_READINESS_PROMPT } from './prompts/proposal-readiness.prompt';
+import {
+  COMPROMISES_PROMPT,
+  compromisesSchema,
+} from './prompts/compromises.prompt';
+import {
+  DISAGREEMENTS_PROMPT,
+  disagreementsSchema,
+} from './prompts/disagreements.prompt';
+import {
+  DRAFT_PROPOSAL_PROMPT,
+  draftProposalSchema,
+} from './prompts/draft-proposal.prompt';
+import {
+  PROPOSAL_READINESS_PROMPT,
+  proposalReadinessSchema,
+} from './prompts/proposal-readiness.prompt';
 
 interface Message {
   sender: string;
@@ -14,72 +26,31 @@ interface Chat {
   messages: Message[];
 }
 
-export const getCompromises = async ({ messages }: Chat) => {
+export const getChatSummary = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
-  const formattedChat = getFormattedChat(recentMessages);
+  const chatData = shapeChatData(recentMessages);
 
-  try {
-    const content = await executePrompt('Llama 3.1', COMPROMISES_PROMPT, {
-      formattedChat,
-    });
-    const response = JSON.parse(content);
+  const content = await executePrompt({
+    model: 'llama3.1:8b',
+    template: CHAT_SUMMARY_PROMPT,
+    variables: { chatData },
+  });
 
-    return { compromises: response.compromises };
-  } catch (e) {
-    return { compromises: [], error: JSON.stringify(e) };
-  }
-};
-
-export const getDisagreements = async ({ messages }: Chat) => {
-  const recentMessages = messages.slice(-50);
-  const formattedChat = getFormattedChat(recentMessages);
-
-  try {
-    const content = await executePrompt('Llama 3.1', DISAGREEMENTS_PROMPT, {
-      formattedChat,
-    });
-    const response = JSON.parse(content);
-
-    return { disagreements: response.disagreements };
-  } catch (e) {
-    return { disagreements: [], error: JSON.stringify(e) };
-  }
-};
-
-export const draftProposal = async ({ messages }: Chat) => {
-  const recentMessages = messages.slice(-50);
-  const formattedChat = getFormattedChat(recentMessages);
-
-  try {
-    const content = await executePrompt('Llama 3.1', DRAFT_PROPOSAL_PROMPT, {
-      formattedChat,
-    });
-    const response = JSON.parse(content);
-
-    return {
-      title: response.title,
-      description: response.description,
-    };
-  } catch (e) {
-    return {
-      title: '',
-      description: '',
-      error: JSON.stringify(e),
-    };
-  }
+  return content.trim();
 };
 
 export const isReadyForProposal = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
-  const formattedChat = getFormattedChat(recentMessages);
+  const chatData = shapeChatData(recentMessages);
 
   try {
-    const content = await executePrompt(
-      'Llama 3.1',
-      PROPOSAL_READINESS_PROMPT,
-      { formattedChat },
-    );
-    const response = JSON.parse(content);
+    const content = await executePrompt({
+      model: 'mistral:7b',
+      template: PROPOSAL_READINESS_PROMPT,
+      variables: { chatData },
+    });
+    const parsedContent = JSON.parse(content);
+    const response = proposalReadinessSchema.parse(parsedContent);
 
     return {
       isReady: response.ready,
@@ -94,27 +65,76 @@ export const isReadyForProposal = async ({ messages }: Chat) => {
   }
 };
 
-export const getChatSummary = async ({ messages }: Chat) => {
+export const getDisagreements = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
-  const formattedChat = getFormattedChat(recentMessages);
+  const chatData = shapeChatData(recentMessages);
 
-  const content = await executePrompt('Llama 3.2 3B', CHAT_SUMMARY_PROMPT, {
-    formattedChat,
-  });
+  try {
+    const content = await executePrompt({
+      model: 'mistral:7b',
+      template: DISAGREEMENTS_PROMPT,
+      variables: { chatData },
+    });
+    const parsedContent = JSON.parse(content);
+    const response = disagreementsSchema.parse(parsedContent);
 
-  return content.trim();
+    return { disagreements: response.disagreements };
+  } catch (e) {
+    return { disagreements: [], error: JSON.stringify(e) };
+  }
 };
 
-const getFormattedChat = (messages: Message[]) => {
-  const formattedMessages = messages
-    .map((message) => `${message.sender}: ${message.body}`)
-    .join('\n');
+export const getCompromises = async ({ messages }: Chat) => {
+  const recentMessages = messages.slice(-50);
+  const chatData = shapeChatData(recentMessages);
 
+  try {
+    const content = await executePrompt({
+      model: 'mistral:7b',
+      template: COMPROMISES_PROMPT,
+      variables: { chatData },
+    });
+    const parsedContent = JSON.parse(content);
+    const response = compromisesSchema.parse(parsedContent);
+
+    return { compromises: response.compromises };
+  } catch (e) {
+    return { compromises: [], error: JSON.stringify(e) };
+  }
+};
+
+export const draftProposal = async ({ messages }: Chat) => {
+  const recentMessages = messages.slice(-50);
+  const chatData = shapeChatData(recentMessages);
+
+  try {
+    const content = await executePrompt({
+      model: 'mistral:7b',
+      template: DRAFT_PROPOSAL_PROMPT,
+      variables: { chatData },
+    });
+    const parsedContent = JSON.parse(content);
+    const response = draftProposalSchema.parse(parsedContent);
+
+    return {
+      title: response.title,
+      description: response.description,
+    };
+  } catch (e) {
+    return {
+      title: '',
+      description: '',
+      error: JSON.stringify(e),
+    };
+  }
+};
+
+const shapeChatData = (messages: Message[]) => {
   const participantCount = new Set(messages.map((m) => m.sender)).size;
   const messageCount = messages.length;
 
   return JSON.stringify({
-    messages: formattedMessages,
+    messages,
     participantCount,
     messageCount,
   });

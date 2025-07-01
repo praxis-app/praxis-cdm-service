@@ -1,4 +1,10 @@
+import { z } from 'zod';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 import { PromptTemplate } from '../../ollama/ollama.types';
+
+export const compromisesSchema = z.object({
+  compromises: z.string().array().describe('An array of compromises'),
+});
 
 export const COMPROMISES_PROMPT: PromptTemplate = {
   system: `
@@ -6,11 +12,10 @@ export const COMPROMISES_PROMPT: PromptTemplate = {
     disagreeing parties in a conversation.
 
     Rules:
-    - Identify realistic compromises between disagreeing parties
-    - Each compromise should be actionable and specific
-    - One compromise per disagreement
-    - Empty array if no compromises possible
+    - Identify actionable compromises between disagreeing parties
     - Return a valid JSON object with no other text
+    - Empty array if no compromises possible
+    - One compromise per disagreement
 
     Example with compromise(s):
     {
@@ -22,10 +27,11 @@ export const COMPROMISES_PROMPT: PromptTemplate = {
       "compromises": []
     }
   `,
-  user: 'Identify potential compromises in this conversation:\n{formattedChat}',
+  user: 'Identify potential compromises in this conversation:\n{chatData}',
   options: {
     temperature: 0.1, // Very low for consistent JSON
     num_predict: 500, // Enough for multiple compromises
     repeat_penalty: 1.3, // Prevent repetition
   },
+  format: zodToJsonSchema(compromisesSchema),
 };
