@@ -71,7 +71,7 @@ export const getDisagreements = async ({ messages }: Chat) => {
 
   try {
     const content = await executePrompt({
-      model: 'llama3.1:8b',
+      model: 'mistral:7b',
       template: DISAGREEMENTS_PROMPT,
       variables: { chatData },
     });
