@@ -1,3 +1,5 @@
+// TODO: Determine whether to rename `formattedChat` to `chat`
+
 import { PromptTemplate } from '../../ollama/ollama.types';
 
 export const COMPROMISES_PROMPT: PromptTemplate = {

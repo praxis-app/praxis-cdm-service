@@ -1,3 +1,4 @@
+// TODO: Determine whether this is needed
 export const MODELS = {
   'Llama 3.1': 'llama3.1',
   'Llama 3.2 1B': 'llama3.2:1b',

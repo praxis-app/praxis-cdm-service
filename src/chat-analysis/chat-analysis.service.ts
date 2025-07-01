@@ -19,8 +19,10 @@ export const getCompromises = async ({ messages }: Chat) => {
   const formattedChat = getFormattedChat(recentMessages);
 
   try {
-    const content = await executePrompt('llama3.1', COMPROMISES_PROMPT, {
-      formattedChat,
+    const content = await executePrompt({
+      model: 'llama3.1',
+      template: COMPROMISES_PROMPT,
+      variables: { formattedChat },
     });
     const response = JSON.parse(content);
 
@@ -35,8 +37,10 @@ export const getDisagreements = async ({ messages }: Chat) => {
   const formattedChat = getFormattedChat(recentMessages);
 
   try {
-    const content = await executePrompt('llama3.1', DISAGREEMENTS_PROMPT, {
-      formattedChat,
+    const content = await executePrompt({
+      model: 'llama3.1',
+      template: DISAGREEMENTS_PROMPT,
+      variables: { formattedChat },
     });
     const response = JSON.parse(content);
 
@@ -51,8 +55,10 @@ export const draftProposal = async ({ messages }: Chat) => {
   const formattedChat = getFormattedChat(recentMessages);
 
   try {
-    const content = await executePrompt('llama3.1', DRAFT_PROPOSAL_PROMPT, {
-      formattedChat,
+    const content = await executePrompt({
+      model: 'llama3.1',
+      template: DRAFT_PROPOSAL_PROMPT,
+      variables: { formattedChat },
     });
     const response = JSON.parse(content);
 
@@ -74,8 +80,10 @@ export const isReadyForProposal = async ({ messages }: Chat) => {
   const formattedChat = getFormattedChat(recentMessages);
 
   try {
-    const content = await executePrompt('llama3.1', PROPOSAL_READINESS_PROMPT, {
-      formattedChat,
+    const content = await executePrompt({
+      model: 'llama3.1',
+      template: PROPOSAL_READINESS_PROMPT,
+      variables: { formattedChat },
     });
     const response = JSON.parse(content);
 
@@ -96,8 +104,10 @@ export const getChatSummary = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
   const formattedChat = getFormattedChat(recentMessages);
 
-  const content = await executePrompt('llama3.2:3b', CHAT_SUMMARY_PROMPT, {
-    formattedChat,
+  const content = await executePrompt({
+    model: 'llama3.2:3b',
+    template: CHAT_SUMMARY_PROMPT,
+    variables: { formattedChat },
   });
 
   return content.trim();

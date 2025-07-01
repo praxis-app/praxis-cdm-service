@@ -1,4 +1,5 @@
 import { ChatRequest } from 'ollama';
+import { MODELS } from './ollama.constants';
 
 export interface PromptTemplate {
   system?: string;
@@ -6,8 +7,10 @@ export interface PromptTemplate {
   options?: ChatRequest['options'];
 }
 
-// TODO: Determine if this is needed
+export type Model = (typeof MODELS)[keyof typeof MODELS];
+
 export interface PromptConfig {
-  model: string;
+  model: Model;
   template: PromptTemplate;
+  variables?: Record<string, string>;
 }

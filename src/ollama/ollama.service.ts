@@ -1,10 +1,8 @@
 import ollama from 'ollama';
-import { PromptTemplate } from './ollama.types';
+import { Model, PromptConfig } from './ollama.types';
 import { INIT_OLLAMA_PROMPT } from './prompts/init-ollama.prompt';
 import { OLLAMA_HEALTH_PROMPT } from './prompts/ollama-health.prompt';
 import { MODELS } from './ollama.constants';
-
-type Model = (typeof MODELS)[keyof typeof MODELS];
 
 /**
  * In-memory cache of verified Ollama models.
@@ -16,11 +14,11 @@ type Model = (typeof MODELS)[keyof typeof MODELS];
  */
 const verifiedModels = new Set<Model>();
 
-export const executePrompt = async (
-  model: Model,
-  { system, user, options }: PromptTemplate,
-  variables: Record<string, string> = {},
-) => {
+export const executePrompt = async ({
+  template: { system, user, options },
+  variables = {},
+  model,
+}: PromptConfig) => {
   await ensureModel(model);
 
   // Replace variables in user prompt
@@ -72,7 +70,10 @@ const ensureModel = async (model: Model) => {
 export const getOllamaInitMessage = async () => {
   const start = Date.now();
   const model = 'Gemma 3 1B';
-  const content = await executePrompt(MODELS[model], INIT_OLLAMA_PROMPT);
+  const content = await executePrompt({
+    model: MODELS[model],
+    template: INIT_OLLAMA_PROMPT,
+  });
 
   const end = Date.now();
   const duration = end - start;
@@ -80,6 +81,9 @@ export const getOllamaInitMessage = async () => {
 };
 
 export const getOllamaHealth = async () => {
-  const content = await executePrompt('llama3.2:1b', OLLAMA_HEALTH_PROMPT);
+  const content = await executePrompt({
+    model: 'llama3.2:1b',
+    template: OLLAMA_HEALTH_PROMPT,
+  });
   return content.trim();
 };
