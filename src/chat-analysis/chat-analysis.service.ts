@@ -1,6 +1,9 @@
 import { executePrompt } from '../ollama/ollama.service';
 import { CHAT_SUMMARY_PROMPT } from './prompts/chat-summary.prompt';
-import { COMPROMISES_PROMPT } from './prompts/compromises.prompt';
+import {
+  COMPROMISES_PROMPT,
+  compromisesSchema,
+} from './prompts/compromises.prompt';
 import { DISAGREEMENTS_PROMPT } from './prompts/disagreements.prompt';
 import { DRAFT_PROPOSAL_PROMPT } from './prompts/draft-proposal.prompt';
 import { PROPOSAL_READINESS_PROMPT } from './prompts/proposal-readiness.prompt';
@@ -24,7 +27,9 @@ export const getCompromises = async ({ messages }: Chat) => {
       template: COMPROMISES_PROMPT,
       variables: { chatData },
     });
-    const response = JSON.parse(content);
+
+    const parsedContent = JSON.parse(content);
+    const response = compromisesSchema.parse(parsedContent);
 
     return { compromises: response.compromises };
   } catch (e) {

@@ -1,4 +1,10 @@
+import { z } from 'zod';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 import { PromptTemplate } from '../../ollama/ollama.types';
+
+export const compromisesSchema = z.object({
+  compromises: z.string().array().describe('An array of compromises'),
+});
 
 export const COMPROMISES_PROMPT: PromptTemplate = {
   system: `
@@ -28,4 +34,5 @@ export const COMPROMISES_PROMPT: PromptTemplate = {
     num_predict: 500, // Enough for multiple compromises
     repeat_penalty: 1.3, // Prevent repetition
   },
+  format: zodToJsonSchema(compromisesSchema),
 };

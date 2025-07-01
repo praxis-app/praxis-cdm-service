@@ -21,7 +21,9 @@
     "morgan": "^1.10.0",
     "ollama": "^0.5.16",
     "pg": "^8.14.1",
-    "typeorm": "^0.3.14"
+    "typeorm": "^0.3.14",
+    "zod": "^3.25.67",
+    "zod-to-json-schema": "^3.24.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

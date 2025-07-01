@@ -14,7 +14,7 @@ import { OLLAMA_HEALTH_PROMPT } from './prompts/ollama-health.prompt';
 const verifiedModels = new Set<Model>();
 
 export const executePrompt = async ({
-  template: { system, user, options },
+  template: { system, user, options, format },
   variables = {},
   model,
 }: PromptConfig) => {
@@ -35,6 +35,7 @@ export const executePrompt = async ({
     model,
     messages,
     options,
+    format,
   });
 
   return message.content;
