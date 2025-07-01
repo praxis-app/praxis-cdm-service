@@ -21,7 +21,7 @@ export const DISAGREEMENTS_PROMPT: PromptTemplate = {
       "disagreements": []
     }
   `,
-  user: 'Identify any disagreements in this conversation:\n{formattedChat}',
+  user: 'Identify any disagreements in this conversation:\n{chatData}',
   options: {
     temperature: 0.1, // Very low for consistent JSON
     num_predict: 500, // Enough for multiple disagreements

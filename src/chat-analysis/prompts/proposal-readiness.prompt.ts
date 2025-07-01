@@ -26,7 +26,7 @@ export const PROPOSAL_READINESS_PROMPT: PromptTemplate = {
       "reason": "Consensus reached"
     }
   `,
-  user: "Analyze this conversation and determine if it's ready for a proposal:\n{formattedChat}",
+  user: "Analyze this conversation and determine if it's ready for a proposal:\n{chatData}",
   // Decision-making focused options
   options: {
     temperature: 0.2, // Lower creativity

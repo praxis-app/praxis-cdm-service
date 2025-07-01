@@ -24,7 +24,7 @@ export const COMPROMISES_PROMPT: PromptTemplate = {
       "compromises": []
     }
   `,
-  user: 'Identify potential compromises in this conversation:\n{formattedChat}',
+  user: 'Identify potential compromises in this conversation:\n{chatData}',
   options: {
     temperature: 0.1, // Very low for consistent JSON
     num_predict: 500, // Enough for multiple compromises

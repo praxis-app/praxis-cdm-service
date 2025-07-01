@@ -15,5 +15,5 @@ export const DRAFT_PROPOSAL_PROMPT: PromptTemplate = {
       "description": "We should meet every Tuesday at 2pm"
     }
   `,
-  user: 'Draft a proposal based on this conversation:\n{formattedChat}',
+  user: 'Draft a proposal based on this conversation:\n{chatData}',
 };

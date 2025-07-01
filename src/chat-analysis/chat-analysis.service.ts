@@ -16,13 +16,13 @@ interface Chat {
 
 export const getCompromises = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
-  const formattedChat = getFormattedChat(recentMessages);
+  const chatData = shapeChatData(recentMessages);
 
   try {
     const content = await executePrompt({
       model: 'llama3.1',
       template: COMPROMISES_PROMPT,
-      variables: { formattedChat },
+      variables: { chatData },
     });
     const response = JSON.parse(content);
 
@@ -34,13 +34,13 @@ export const getCompromises = async ({ messages }: Chat) => {
 
 export const getDisagreements = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
-  const formattedChat = getFormattedChat(recentMessages);
+  const chatData = shapeChatData(recentMessages);
 
   try {
     const content = await executePrompt({
       model: 'llama3.1',
       template: DISAGREEMENTS_PROMPT,
-      variables: { formattedChat },
+      variables: { chatData },
     });
     const response = JSON.parse(content);
 
@@ -52,13 +52,13 @@ export const getDisagreements = async ({ messages }: Chat) => {
 
 export const draftProposal = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
-  const formattedChat = getFormattedChat(recentMessages);
+  const chatData = shapeChatData(recentMessages);
 
   try {
     const content = await executePrompt({
       model: 'llama3.1',
       template: DRAFT_PROPOSAL_PROMPT,
-      variables: { formattedChat },
+      variables: { chatData },
     });
     const response = JSON.parse(content);
 
@@ -77,13 +77,13 @@ export const draftProposal = async ({ messages }: Chat) => {
 
 export const isReadyForProposal = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
-  const formattedChat = getFormattedChat(recentMessages);
+  const chatData = shapeChatData(recentMessages);
 
   try {
     const content = await executePrompt({
       model: 'llama3.1',
       template: PROPOSAL_READINESS_PROMPT,
-      variables: { formattedChat },
+      variables: { chatData },
     });
     const response = JSON.parse(content);
 
@@ -102,18 +102,18 @@ export const isReadyForProposal = async ({ messages }: Chat) => {
 
 export const getChatSummary = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
-  const formattedChat = getFormattedChat(recentMessages);
+  const chatData = shapeChatData(recentMessages);
 
   const content = await executePrompt({
     model: 'llama3.2:3b',
     template: CHAT_SUMMARY_PROMPT,
-    variables: { formattedChat },
+    variables: { chatData },
   });
 
   return content.trim();
 };
 
-const getFormattedChat = (messages: Message[]) => {
+const shapeChatData = (messages: Message[]) => {
   const formattedMessages = messages
     .map((message) => `${message.sender}: ${message.body}`)
     .join('\n');
