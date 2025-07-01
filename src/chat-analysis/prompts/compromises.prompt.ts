@@ -12,11 +12,10 @@ export const COMPROMISES_PROMPT: PromptTemplate = {
     disagreeing parties in a conversation.
 
     Rules:
-    - Identify realistic compromises between disagreeing parties
-    - Each compromise should be actionable and specific
-    - One compromise per disagreement
-    - Empty array if no compromises possible
+    - Identify actionable compromises between disagreeing parties
     - Return a valid JSON object with no other text
+    - Empty array if no compromises possible
+    - One compromise per disagreement
 
     Example with compromise(s):
     {
