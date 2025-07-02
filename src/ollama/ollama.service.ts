@@ -21,24 +21,19 @@ export const executePrompt = async ({
   await ensureModel(model);
 
   // Replace variables in user prompt
-  const userContent = Object.entries(variables).reduce(
+  const prompt = Object.entries(variables).reduce(
     (content, [key, value]) => content.replace(`{${key}}`, value),
     user,
   );
-
-  const messages = [
-    ...(system ? [{ role: 'system', content: system }] : []),
-    { role: 'user', content: userContent },
-  ];
-
-  const { message } = await ollama.chat({
+  const { response } = await ollama.generate({
     model,
-    messages,
+    prompt,
+    system,
     options,
     format,
   });
 
-  return message.content;
+  return response;
 };
 
 const ensureModel = async (model: Model) => {
