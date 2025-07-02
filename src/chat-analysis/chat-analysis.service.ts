@@ -130,15 +130,11 @@ export const draftProposal = async ({ messages }: Chat) => {
 };
 
 const shapeChatData = (messages: Message[]) => {
-  const formattedMessages = messages
-    .map((message) => `${message.sender}: ${message.body}`)
-    .join('\n');
-
   const participantCount = new Set(messages.map((m) => m.sender)).size;
   const messageCount = messages.length;
 
   return JSON.stringify({
-    messages: formattedMessages,
+    messages,
     participantCount,
     messageCount,
   });
