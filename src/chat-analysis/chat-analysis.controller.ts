@@ -1,3 +1,10 @@
+/**
+ * TODO: Convert routes to Matrix AS event handlers
+ *
+ * The following routes are currently used solely for testing purposes.
+ * They will be converted to Matrix AS event handlers in the future.
+ */
+
 import { Request, Response } from 'express';
 import * as chatAnalysisService from './chat-analysis.service';
 
