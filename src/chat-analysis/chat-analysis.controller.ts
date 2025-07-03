@@ -3,6 +3,8 @@
  *
  * The following routes are currently used solely for testing purposes.
  * They will be converted to Matrix AS event handlers in the future.
+ *
+ * Ref: https://spec.matrix.org/v1.15/application-service-api/#application-services
  */
 
 import { Request, Response } from 'express';
