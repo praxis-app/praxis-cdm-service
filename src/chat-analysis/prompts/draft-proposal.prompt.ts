@@ -7,10 +7,6 @@ export const draftProposalSchema = z.object({
   description: z.string().describe('A short description of the proposal'),
 });
 
-/**
- * TODO: Try updating the user prompt to the following for improved results:
- * "Draft a proposal based on this discussion. Remember to identify the FINAL consensus reached:\n{chatData}"
- */
 export const DRAFT_PROPOSAL_PROMPT: PromptTemplate = {
   system: `
     You are an AI assistant that helps draft a proposal based on a discussion.
