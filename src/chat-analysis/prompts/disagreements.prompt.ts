@@ -6,6 +6,7 @@ export const disagreementsSchema = z.object({
   disagreements: z.string().array().describe('An array of disagreements'),
 });
 
+// TODO: Examples should be updated - they seem to confuse the model
 export const DISAGREEMENTS_PROMPT: PromptTemplate = {
   system: `
     You are an AI assistant that helps identify disagreements in a conversation.
