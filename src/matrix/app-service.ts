@@ -4,6 +4,56 @@ import { Request, Response } from 'express';
 
 dotenv.config();
 
+declare interface AppService {
+  /**
+   * Emitted when an event is pushed to the appservice.
+   * The format of the event object is documented at
+   * https://matrix.org/docs/spec/application_service/r0.1.2#put-matrix-app-v1-transactions-txnid
+   * @event
+   * @example
+   * appService.on("event", function(ev) {
+   *   console.log("ID: %s", ev.event_id);
+   * });
+   */
+  on(event: 'event', cb: (event: Record<string, unknown>) => void): this;
+  /**
+   * Emitted when an ephemeral event is pushed to the appservice.
+   * The format of the event object is documented at
+   * https://github.com/matrix-org/matrix-doc/pull/2409
+   * @event
+   * @example
+   * appService.on("ephemeral", function(ev) {
+   *   console.log("ID: %s", ev.type);
+   * });
+   */
+  on(event: 'ephemeral', cb: (event: Record<string, unknown>) => void): this;
+  /**
+   * Emitted when the HTTP listener logs some information.
+   * `access_tokens` are stripped from requests
+   * @event
+   * @example
+   * appService.on("http-log", function(line) {
+   *   console.log(line);
+   * });
+   */
+  on(event: 'http-log', cb: (line: string) => void): this;
+  /**
+   * Emitted when an event of a particular type is pushed
+   * to the appservice. This will be emitted *in addition*
+   * to "event", so ensure your bridge deduplicates events.
+   * @event
+   * @param event Should start with "type:"
+   * @example
+   * appService.on("type:m.room.message", function(event) {
+   *   console.log("ID: %s", ev.content.body);
+   * });
+   */
+  on(
+    event: `type:${string}`,
+    cb: (event: Record<string, unknown>) => void,
+  ): this;
+}
+
 class AppService extends EventEmitter {
   private lastProcessedTxnId = '';
 
