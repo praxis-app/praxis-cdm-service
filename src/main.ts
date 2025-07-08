@@ -6,6 +6,7 @@ import helmet, { contentSecurityPolicy } from 'helmet';
 import morgan from 'morgan';
 import { appRouter } from './app.router';
 import { dataSource } from './database/data-source';
+import { initMatrixEventHandlers } from './matrix/matrix.service';
 import { getOllamaInitMessage } from './ollama/ollama.service';
 
 dotenv.config();
@@ -33,6 +34,8 @@ dotenv.config();
   app.use(cors());
 
   app.use('/', appRouter);
+
+  initMatrixEventHandlers();
 
   app.listen(port, () => {
     const url = `http://localhost:${port}`;

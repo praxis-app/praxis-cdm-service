@@ -76,6 +76,7 @@ class AppService extends EventEmitter {
       return;
     }
 
+    // Prevent duplicate processing of the same transaction
     if (this.lastProcessedTxnId === txnId) {
       res.send({});
       return;
@@ -118,4 +119,4 @@ class AppService extends EventEmitter {
   };
 }
 
-export const matrixService = new AppService(process.env.MATRIX_HS_TOKEN!);
+export const appService = new AppService(process.env.MATRIX_HS_TOKEN!);
