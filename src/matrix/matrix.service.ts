@@ -3,6 +3,9 @@
 import { appService } from './app-service';
 
 const handleMatrixEvent = (event: Record<string, unknown>) => {
+  if (event.type === 'm.room.message') {
+    return;
+  }
   console.log('😎 matrix event', event);
 };
 
