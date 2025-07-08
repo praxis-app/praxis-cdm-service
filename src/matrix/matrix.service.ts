@@ -104,6 +104,8 @@ const fetchRoomMessages = async (
         Authorization: `Bearer ${process.env.MATRIX_AS_TOKEN}`,
         'Content-Type': 'application/json',
       },
+
+      // TODO: Verify that params are valid
       params: {
         limit,
         dir: 'b', // backwards (most recent first)
@@ -115,15 +117,24 @@ const fetchRoomMessages = async (
 
   // Filter for text messages and extract sender and body
   return events
-    .filter(
-      (event: Record<string, unknown>) =>
-        event.type === 'm.room.message' &&
-        (event.content as Record<string, unknown>)?.msgtype === 'm.text',
+    .reduce(
+      (
+        acc: Array<{ sender: string; body: string }>,
+        event: Record<string, unknown>,
+      ) => {
+        if (
+          event.type === 'm.room.message' &&
+          (event.content as Record<string, unknown>)?.msgtype === 'm.text'
+        ) {
+          acc.push({
+            sender: event.sender as string,
+            body: (event.content as Record<string, unknown>)?.body as string,
+          });
+        }
+        return acc;
+      },
+      [] as Array<{ sender: string; body: string }>,
     )
-    .map((event: Record<string, unknown>) => ({
-      sender: event.sender as string,
-      body: (event.content as Record<string, unknown>)?.body as string,
-    }))
     .reverse(); // Reverse to get chronological order
 };
 
