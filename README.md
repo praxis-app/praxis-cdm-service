@@ -18,6 +18,17 @@ $ npm install
 $ cp .env.example .env
 ```
 
+### Required environment variables
+
+- `PORT` - Server port (default: 3200)
+- `DB_HOST` - Database host
+- `DB_SCHEMA` - Database name
+- `DB_USERNAME` - Database username
+- `DB_PASSWORD` - Database password
+- `DB_PORT` - Database port
+- `MATRIX_HS_TOKEN` - Your Matrix homeserver token for the application service
+- `MATRIX_HS_URL` - URL of your Matrix homeserver (default: http://localhost:8008)
+
 ## Docker
 
 Install [Docker](https://docs.docker.com/engine/install) to use the following commands.
