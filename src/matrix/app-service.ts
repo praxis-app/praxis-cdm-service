@@ -38,9 +38,9 @@ declare interface AppService {
    */
   on(event: 'http-log', cb: (line: string) => void): this;
   /**
-   * Emitted when an event of a particular type is pushed
-   * to the appservice. This will be emitted *in addition*
-   * to "event", so ensure your bridge deduplicates events.
+   * Emitted when an event of a particular type is pushed to the appservice.
+   * This will be emitted *in addition* to "event" - deduplicate events
+   * will need to be handled accordingly
    * @event
    * @param event Should start with "type:"
    * @example
@@ -50,6 +50,21 @@ declare interface AppService {
    */
   on(
     event: `type:${string}`,
+    cb: (event: Record<string, unknown>) => void,
+  ): this;
+  /**
+   * Emitted when an ephemeral event of a particular type is pushed to the appservice.
+   * This will be emitted *in addition* to "ephemeral" - deduplicate events
+   * will need to be handled accordingly
+   * @event
+   * @param event Should start with "ephemeral_type:"
+   * @example
+   * appService.on("ephemeral_type:m.room.message", function(event) {
+   *   console.log("ID: %s", ev.content.body);
+   * });
+   */
+  on(
+    event: `ephemeral_type:${string}`,
     cb: (event: Record<string, unknown>) => void,
   ): this;
 }
