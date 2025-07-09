@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 import { EventEmitter } from 'events';
 import { Request, Response } from 'express';
+import { config } from '../config/config';
 
 dotenv.config();
 
@@ -134,4 +135,4 @@ class AppService extends EventEmitter {
   };
 }
 
-export const appService = new AppService(process.env.MATRIX_HS_TOKEN!);
+export const appService = new AppService(config.matrix.hsToken);

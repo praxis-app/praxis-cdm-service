@@ -1,11 +1,12 @@
 import axios, { AxiosInstance, AxiosResponse, Method } from 'axios';
+import { config } from '../config/config';
 
 class MatrixClient {
   private axiosInstance: AxiosInstance;
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: `${process.env.MATRIX_HS_URL || 'http://localhost:8008'}/_matrix/client/r0`,
+      baseURL: `${config.matrix.hsUrl}/_matrix/client/r0`,
     });
   }
 
@@ -38,8 +39,8 @@ class MatrixClient {
     options?: { data?: any; params?: any; responseType?: any },
   ): Promise<T> {
     try {
-      const token = process.env.MATRIX_AS_TOKEN;
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const { asToken } = config.matrix;
+      const headers = asToken ? { Authorization: `Bearer ${asToken}` } : {};
 
       const response: AxiosResponse<T> = await this.axiosInstance.request<T>({
         method,
