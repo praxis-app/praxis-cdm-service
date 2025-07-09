@@ -1,7 +1,7 @@
 import { Commands } from '../commands/commands.constants';
 import { handleSummaryCommand } from '../commands/commands.service';
 import { appService } from './app-service';
-import { joinRoom } from './matrix.service';
+import { api } from './matrix.client';
 
 const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
   const content = event.content as Record<string, unknown>;
@@ -13,7 +13,8 @@ const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
     membership === 'invite' &&
     stateKey === '@praxis-bot:rhizome.matrix.host'
   ) {
-    await joinRoom(event.room_id as string);
+    await api.joinRoom(event.room_id as string);
+    console.info(`✅ Successfully joined room: ${event.room_id}`);
   }
 };
 
