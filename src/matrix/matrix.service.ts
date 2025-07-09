@@ -4,20 +4,7 @@ import axios from 'axios';
 import { appService } from './app-service';
 import { getChatSummary } from '../chat-analysis/chat-analysis.service';
 
-const handleMatrixEvent = (event: Record<string, unknown>) => {
-  if (event.type === 'm.room.message' || event.type === 'm.room.member') {
-    return;
-  }
-  console.log('😎 matrix event', event);
-};
-
-const handleMatrixEphemeralEvent = (event: Record<string, unknown>) => {
-  console.log('👻 matrix ephemeral event', event);
-};
-
 const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
-  console.log('👤 matrix room member event', event);
-
   const content = event.content as Record<string, unknown>;
   const membership = content?.membership as string;
   const stateKey = event.state_key as string;
@@ -32,8 +19,6 @@ const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
 };
 
 const handleMatrixMessageEvent = async (event: Record<string, unknown>) => {
-  console.log('💬 matrix message event', event);
-
   // Check if this is a text message with /summary command
   const content = event.content as Record<string, unknown>;
   const body = content?.body as string;
@@ -157,8 +142,6 @@ const sendBotMessage = async (roomId: string, message: string) => {
 };
 
 export const initMatrixEventHandlers = () => {
-  appService.on('event', handleMatrixEvent);
-  appService.on('ephemeral', handleMatrixEphemeralEvent);
   appService.on('type:m.room.message', handleMatrixMessageEvent);
   appService.on('type:m.room.member', handleMatrixRoomMemberEvent);
 };
