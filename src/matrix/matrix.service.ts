@@ -1,61 +1,6 @@
-// TODO: Clean up error handling, logging, and comments
-
 import axios from 'axios';
-import { appService } from './app-service';
-import { getChatSummary } from '../chat-analysis/chat-analysis.service';
 
-const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
-  const content = event.content as Record<string, unknown>;
-  const membership = content?.membership as string;
-  const stateKey = event.state_key as string;
-
-  // TODO: Remove hardcoded state key
-  if (
-    membership === 'invite' &&
-    stateKey === '@praxis-bot:rhizome.matrix.host'
-  ) {
-    await joinRoom(event.room_id as string);
-  }
-};
-
-const handleMatrixMessageEvent = async (event: Record<string, unknown>) => {
-  // Check if this is a text message with /summary command
-  const content = event.content as Record<string, unknown>;
-  const body = content?.body as string;
-
-  if (body?.startsWith('/summary')) {
-    await handleSummaryCommand(event);
-  }
-};
-
-const handleSummaryCommand = async (event: Record<string, unknown>) => {
-  try {
-    const roomId = event.room_id as string;
-    const messages = await fetchRoomMessages(roomId, 20);
-
-    if (messages.length === 0) {
-      await sendBotMessage(
-        roomId,
-        'No messages found in this room to summarize.',
-      );
-      return;
-    }
-
-    console.info('🔍 Fetching chat summary');
-    const summary = await getChatSummary({ messages });
-
-    await sendBotMessage(roomId, summary);
-  } catch (error) {
-    console.error('Error handling summary command', error);
-    const roomId = event.room_id as string;
-    await sendBotMessage(
-      roomId,
-      'Sorry, I encountered an error while generating the summary. Please try again.',
-    );
-  }
-};
-
-const joinRoom = async (roomId: string) => {
+export const joinRoom = async (roomId: string) => {
   const matrixServerUrl = process.env.MATRIX_HS_URL || 'http://localhost:8008';
   const accessToken = process.env.MATRIX_AS_TOKEN;
 
@@ -76,7 +21,7 @@ const joinRoom = async (roomId: string) => {
   console.info(`✅ Successfully joined room: ${roomId}`);
 };
 
-const fetchRoomMessages = async (
+export const fetchRoomMessages = async (
   roomId: string,
   limit: number = 20,
 ): Promise<Array<{ sender: string; body: string }>> => {
@@ -123,7 +68,7 @@ const fetchRoomMessages = async (
     .reverse(); // Reverse to get chronological order
 };
 
-const sendBotMessage = async (roomId: string, message: string) => {
+export const sendBotMessage = async (roomId: string, message: string) => {
   const matrixServerUrl = process.env.MATRIX_HS_URL || 'http://localhost:8008';
 
   await axios.post(
@@ -139,9 +84,4 @@ const sendBotMessage = async (roomId: string, message: string) => {
       },
     },
   );
-};
-
-export const initMatrixEventHandlers = () => {
-  appService.on('type:m.room.message', handleMatrixMessageEvent);
-  appService.on('type:m.room.member', handleMatrixRoomMemberEvent);
 };
