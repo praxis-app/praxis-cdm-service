@@ -1,3 +1,4 @@
 export enum Commands {
-  SUMMARY = '/summary',
+  Summary = '/summary',
+  Consensus = '/consensus',
 }

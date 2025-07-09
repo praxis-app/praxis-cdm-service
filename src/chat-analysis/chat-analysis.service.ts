@@ -58,9 +58,9 @@ export const isReadyForProposal = async ({ messages }: Chat) => {
     };
   } catch (e) {
     return {
-      isReady: false,
-      reason: 'Failed to parse JSON from LLM',
       error: JSON.stringify(e),
+      isReady: null,
+      reason: null,
     };
   }
 };

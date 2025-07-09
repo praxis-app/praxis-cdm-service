@@ -1,5 +1,8 @@
 import { Commands } from '../commands/commands.constants';
-import { handleSummaryCommand } from '../commands/commands.service';
+import {
+  handleConsensusCommand,
+  handleSummaryCommand,
+} from '../commands/commands.service';
 import { appService } from './app-service';
 import { api } from './matrix.client';
 
@@ -23,8 +26,11 @@ const handleMatrixMessageEvent = async (event: Record<string, unknown>) => {
   const content = event.content as Record<string, unknown>;
   const body = content?.body as string;
 
-  if (body?.startsWith(Commands.SUMMARY)) {
+  if (body?.toLowerCase().startsWith(Commands.Summary)) {
     await handleSummaryCommand(event);
+  }
+  if (body?.toLowerCase().startsWith(Commands.Consensus)) {
+    await handleConsensusCommand(event);
   }
 };
 
