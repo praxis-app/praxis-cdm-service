@@ -1,9 +1,6 @@
-import * as dotenv from 'dotenv';
 import { EventEmitter } from 'events';
 import { Request, Response } from 'express';
 import { config } from '../config/config';
-
-dotenv.config();
 
 declare interface AppService {
   /**

@@ -1,21 +1,19 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
 import express from 'express';
 import helmet, { contentSecurityPolicy } from 'helmet';
 import morgan from 'morgan';
 import { appRouter } from './app.router';
+import { config } from './config/config';
 import { dataSource } from './database/data-source';
 import { initMatrixEventHandlers } from './matrix/matrix.events';
 import { getOllamaInitMessage } from './ollama/ollama.service';
-
-dotenv.config();
 
 (async () => {
   const startTime = Date.now();
 
   const app = express();
-  const port = process.env.PORT;
+  const { port } = config.server;
 
   await dataSource.initialize();
 

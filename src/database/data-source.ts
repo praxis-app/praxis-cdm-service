@@ -1,3 +1,5 @@
+// TODO: Pull from config file - hold off until work with DB begins
+
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
 
