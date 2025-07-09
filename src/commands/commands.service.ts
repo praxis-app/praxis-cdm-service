@@ -38,9 +38,11 @@ export const handleSummaryCommand = async (event: Record<string, unknown>) => {
     }
 
     console.info('🔍 Fetching chat summary');
+    const start = Date.now();
     const summary = await getChatSummary({ messages });
+    const message = `${summary} (${Date.now() - start}ms)`;
 
-    await api.sendBotMessage(roomId, summary);
+    await api.sendBotMessage(roomId, message);
   } catch (error) {
     console.error('Error handling summary command', error);
     const roomId = event.room_id as string;
