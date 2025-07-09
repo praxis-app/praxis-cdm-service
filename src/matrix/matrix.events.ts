@@ -3,6 +3,7 @@ import {
   handleConsensusCommand,
   handleSummaryCommand,
 } from '../commands/commands.service';
+import { config } from '../config/config';
 import { appService } from './app-service';
 import { api } from './matrix.client';
 
@@ -11,25 +12,23 @@ const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
   const membership = content?.membership as string;
   const stateKey = event.state_key as string;
 
-  // TODO: Remove hardcoded state key
-  if (
-    membership === 'invite' &&
-    stateKey === '@praxis-bot:rhizome.matrix.host'
-  ) {
+  if (membership === 'invite' && stateKey === config.matrix.botName) {
     await api.joinRoom(event.room_id as string);
     console.info(`✅ Successfully joined room: ${event.room_id}`);
   }
 };
 
 const handleMatrixMessageEvent = async (event: Record<string, unknown>) => {
-  // Check if this is a text message with /summary command
   const content = event.content as Record<string, unknown>;
-  const body = content?.body as string;
+  const body = content?.body as string | undefined;
+  if (!body) {
+    return;
+  }
 
-  if (body?.toLowerCase().startsWith(Commands.Summary)) {
+  if (body.toLowerCase().startsWith(Commands.Summary)) {
     await handleSummaryCommand(event);
   }
-  if (body?.toLowerCase().startsWith(Commands.Consensus)) {
+  if (body.toLowerCase().startsWith(Commands.Consensus)) {
     await handleConsensusCommand(event);
   }
 };

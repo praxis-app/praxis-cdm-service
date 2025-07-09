@@ -17,7 +17,7 @@ class MatrixClient {
   };
 
   getRoomMessages = async (roomId: string, limit: number = 20) => {
-    return this.executeRequest<{ chunk: Array<Record<string, unknown>> }>(
+    return this.executeRequest<{ chunk: Record<string, unknown>[] }>(
       'get',
       `/rooms/${encodeURIComponent(roomId)}/messages`,
       { params: { limit, dir: 'b' } },

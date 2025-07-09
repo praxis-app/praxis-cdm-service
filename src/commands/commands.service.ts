@@ -2,7 +2,9 @@ import {
   getChatSummary,
   isReadyForProposal,
 } from '../chat-analysis/chat-analysis.service';
+import { config } from '../config/config';
 import { api } from '../matrix/matrix.client';
+import { Commands } from './commands.constants';
 
 export const handleSummaryCommand = async (event: Record<string, unknown>) => {
   try {
@@ -10,7 +12,7 @@ export const handleSummaryCommand = async (event: Record<string, unknown>) => {
     const response = await api.getRoomMessages(roomId);
 
     const events = response.chunk || [];
-    const messages = shapeMessages(events);
+    const messages = prepareMessages(events);
 
     if (messages.length === 0) {
       await api.sendBotMessage(
@@ -44,7 +46,7 @@ export const handleConsensusCommand = async (
     const response = await api.getRoomMessages(roomId);
 
     const events = response.chunk || [];
-    const messages = shapeMessages(events);
+    const messages = prepareMessages(events);
 
     if (messages.length === 0) {
       await api.sendBotMessage(
@@ -73,26 +75,40 @@ export const handleConsensusCommand = async (
   }
 };
 
-// Filter for text messages and extract sender and body
-const shapeMessages = (events: Array<Record<string, unknown>>) => {
-  return events
+/**
+ * Filter for text messages, not from the bot, and not a command.
+ * Extract sender and body.
+ */
+const prepareMessages = (events: Record<string, unknown>[]) =>
+  events
     .reduce(
       (
-        acc: Array<{ sender: string; body: string }>,
+        acc: { sender: string; body: string }[],
         event: Record<string, unknown>,
       ) => {
-        if (
+        const body = (event.content as Record<string, unknown>).body as
+          | string
+          | undefined;
+
+        const isTextMessage =
+          body &&
           event.type === 'm.room.message' &&
-          (event.content as Record<string, unknown>)?.msgtype === 'm.text'
-        ) {
+          (event.content as Record<string, unknown>)?.msgtype === 'm.text';
+
+        const isCommand =
+          body?.toLowerCase().startsWith(Commands.Summary) ||
+          body?.toLowerCase().startsWith(Commands.Consensus);
+
+        const isBot = event.sender === config.matrix.botName;
+
+        if (isTextMessage && !isBot && !isCommand) {
           acc.push({
             sender: event.sender as string,
-            body: (event.content as Record<string, unknown>)?.body as string,
+            body,
           });
         }
         return acc;
       },
-      [] as Array<{ sender: string; body: string }>,
+      [] as { sender: string; body: string }[],
     )
-    .reverse(); // Reverse to get chronological order
-};
+    .reverse();
