@@ -4,6 +4,11 @@ import { appService } from './app-service';
 import { api } from './matrix.client';
 import { isTextMessage } from './matrix.utils';
 
+export const initMatrixEventHandlers = () => {
+  appService.on('type:m.room.message', handleMatrixMessageEvent);
+  appService.on('type:m.room.member', handleMatrixRoomMemberEvent);
+};
+
 const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
   const content = event.content as Record<string, unknown>;
   const membership = content?.membership as string;
@@ -23,9 +28,4 @@ const handleMatrixMessageEvent = async (event: Record<string, unknown>) => {
   if (isText && isCommand && !isBot) {
     await commandsService.handleCommandExecution(event);
   }
-};
-
-export const initMatrixEventHandlers = () => {
-  appService.on('type:m.room.message', handleMatrixMessageEvent);
-  appService.on('type:m.room.member', handleMatrixRoomMemberEvent);
 };
