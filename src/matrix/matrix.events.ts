@@ -1,10 +1,4 @@
-import { Commands } from '../commands/commands.constants';
-import {
-  handleConsensusCommand,
-  handleDisagreementsCommand,
-  handleCompromisesCommand,
-  handleSummaryCommand,
-} from '../commands/commands.service';
+import * as commandsService from '../commands/commands.service';
 import { config } from '../config/config';
 import { appService } from './app-service';
 import { api } from './matrix.client';
@@ -21,23 +15,8 @@ const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
 };
 
 const handleMatrixMessageEvent = async (event: Record<string, unknown>) => {
-  const content = event.content as Record<string, unknown>;
-  const body = content?.body as string | undefined;
-  if (!body) {
-    return;
-  }
-
-  if (body.toLowerCase().startsWith(Commands.Summary)) {
-    await handleSummaryCommand(event);
-  }
-  if (body.toLowerCase().startsWith(Commands.Consensus)) {
-    await handleConsensusCommand(event);
-  }
-  if (body.toLowerCase().startsWith(Commands.Disagreements)) {
-    await handleDisagreementsCommand(event);
-  }
-  if (body.toLowerCase().startsWith(Commands.Compromises)) {
-    await handleCompromisesCommand(event);
+  if (commandsService.isCommandMessage(event)) {
+    await commandsService.handleCommandExecution(event);
   }
 };
 

@@ -6,9 +6,47 @@ import {
 } from '../chat-analysis/chat-analysis.service';
 import { config } from '../config/config';
 import { api } from '../matrix/matrix.client';
-import { Commands } from './commands.constants';
 
-export const handleSummaryCommand = async (event: Record<string, unknown>) => {
+export enum Commands {
+  Summary = '/summary',
+  Consensus = '/consensus',
+  Disagreements = '/disagreements',
+  Compromises = '/compromises',
+  DraftProposal = '/proposal',
+}
+
+export const handleCommandExecution = async (
+  event: Record<string, unknown>,
+) => {
+  const content = event.content as Record<string, unknown>;
+  const body = content?.body as string | undefined;
+  if (!body) {
+    return;
+  }
+
+  // TODO: Uncomment when ready to use
+  // const commandHandlers = {
+  //   [Commands.Summary]: handleSummaryCommand,
+  //   [Commands.Consensus]: handleConsensusCommand,
+  //   [Commands.Disagreements]: handleDisagreementsCommand,
+  //   [Commands.Compromises]: handleCompromisesCommand,
+  // };
+
+  if (body.toLowerCase().startsWith(Commands.Summary)) {
+    await handleSummaryCommand(event);
+  }
+  if (body.toLowerCase().startsWith(Commands.Consensus)) {
+    await handleConsensusCommand(event);
+  }
+  if (body.toLowerCase().startsWith(Commands.Disagreements)) {
+    await handleDisagreementsCommand(event);
+  }
+  if (body.toLowerCase().startsWith(Commands.Compromises)) {
+    await handleCompromisesCommand(event);
+  }
+};
+
+const handleSummaryCommand = async (event: Record<string, unknown>) => {
   try {
     const roomId = event.room_id as string;
     const response = await api.getRoomMessages(roomId);
@@ -40,9 +78,7 @@ export const handleSummaryCommand = async (event: Record<string, unknown>) => {
   }
 };
 
-export const handleConsensusCommand = async (
-  event: Record<string, unknown>,
-) => {
+const handleConsensusCommand = async (event: Record<string, unknown>) => {
   try {
     const roomId = event.room_id as string;
     const response = await api.getRoomMessages(roomId);
@@ -77,9 +113,7 @@ export const handleConsensusCommand = async (
   }
 };
 
-export const handleDisagreementsCommand = async (
-  event: Record<string, unknown>,
-) => {
+const handleDisagreementsCommand = async (event: Record<string, unknown>) => {
   try {
     const roomId = event.room_id as string;
     const response = await api.getRoomMessages(roomId);
@@ -123,9 +157,7 @@ export const handleDisagreementsCommand = async (
   }
 };
 
-export const handleCompromisesCommand = async (
-  event: Record<string, unknown>,
-) => {
+const handleCompromisesCommand = async (event: Record<string, unknown>) => {
   try {
     const roomId = event.room_id as string;
     const response = await api.getRoomMessages(roomId);
@@ -169,6 +201,15 @@ export const handleCompromisesCommand = async (
   }
 };
 
+export const isCommandMessage = (event: Record<string, unknown>) => {
+  const body = (event.content as Record<string, unknown>).body as
+    | string
+    | undefined;
+  return Object.values(Commands).some((command) =>
+    body?.toLowerCase().startsWith(command),
+  );
+};
+
 /**
  * Filter for text messages, not from the bot, and not a command.
  * Extract sender and body.
@@ -189,11 +230,8 @@ const prepareMessages = (events: Record<string, unknown>[]) =>
           event.type === 'm.room.message' &&
           (event.content as Record<string, unknown>)?.msgtype === 'm.text';
 
-        const isCommand =
-          body?.toLowerCase().startsWith(Commands.Summary) ||
-          body?.toLowerCase().startsWith(Commands.Consensus);
-
         const isBot = event.sender === config.matrix.botName;
+        const isCommand = isCommandMessage(event);
 
         if (isTextMessage && !isBot && !isCommand) {
           acc.push({
