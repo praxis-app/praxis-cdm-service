@@ -1,11 +1,4 @@
-/**
- * TODO: Convert routes to Matrix AS event handlers
- *
- * The following routes are currently used solely for testing purposes.
- * They will be converted to Matrix AS event handlers in the future.
- *
- * Ref: https://spec.matrix.org/v1.15/application-service-api/#application-services
- */
+// TODO: Remove the following routes once no longer needed for testing
 
 import { Request, Response } from 'express';
 import * as chatAnalysisService from './chat-analysis.service';
