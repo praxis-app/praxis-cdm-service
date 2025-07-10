@@ -39,8 +39,7 @@ export const handleCommandExecution = async (
   await commandHandlers[command](event);
 };
 
-export const isCommandMessage = (event: Record<string, unknown>) => {
-  const body = getMessageBody(event);
+export const isCommandMessage = (body: string) => {
   return Object.values(Commands).some((command) =>
     body?.toLowerCase().startsWith(command),
   );

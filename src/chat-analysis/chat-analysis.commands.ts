@@ -222,7 +222,7 @@ const prepareMessages = (events: Record<string, unknown>[]) =>
         const body = getMessageBody(event);
         const isText = isTextMessage(event);
         const isBot = event.sender === config.matrix.botName;
-        const isCommand = isCommandMessage(event);
+        const isCommand = body && isCommandMessage(body);
 
         if (body && isText && !isBot && !isCommand) {
           result.push({

@@ -2,7 +2,7 @@ import * as commandsService from '../commands/commands.service';
 import { config } from '../config/config';
 import { appService } from './app-service';
 import { api } from './matrix.client';
-import { isTextMessage } from './matrix.utils';
+import { getMessageBody, isTextMessage } from './matrix.utils';
 
 export const initMatrixEventHandlers = () => {
   appService.on('type:m.room.message', handleMatrixMessageEvent);
@@ -21,9 +21,10 @@ const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
 };
 
 const handleMatrixMessageEvent = async (event: Record<string, unknown>) => {
+  const body = getMessageBody(event);
   const isText = isTextMessage(event);
   const isBot = event.sender === config.matrix.botName;
-  const isCommand = commandsService.isCommandMessage(event);
+  const isCommand = body && commandsService.isCommandMessage(body);
 
   if (isText && isCommand && !isBot) {
     await commandsService.handleCommandExecution(event);
