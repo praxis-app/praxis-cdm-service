@@ -29,16 +29,19 @@ export const handleCommandExecution = async (
     [Commands.DraftProposal]: handleDraftProposalCommand,
   };
 
-  const command = extractCommand(event);
+  const body = getMessageBody(event);
+  const command = Object.values(Commands).find((command) =>
+    body?.toLowerCase().startsWith(command),
+  );
   if (!command) {
     throw new Error('No valid command found in message');
   }
   await commandHandlers[command](event);
 };
 
-export const extractCommand = (event: Record<string, unknown>) => {
+export const isCommandMessage = (event: Record<string, unknown>) => {
   const body = getMessageBody(event);
-  return Object.values(Commands).find((command) =>
+  return Object.values(Commands).some((command) =>
     body?.toLowerCase().startsWith(command),
   );
 };

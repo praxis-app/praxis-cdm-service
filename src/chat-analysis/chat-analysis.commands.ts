@@ -1,4 +1,4 @@
-import { extractCommand } from '../commands/commands.service';
+import { isCommandMessage } from '../commands/commands.service';
 import { config } from '../config/config';
 import { api } from '../matrix/matrix.client';
 import { getMessageBody, isTextMessage } from '../matrix/matrix.utils';
@@ -222,7 +222,7 @@ const prepareMessages = (events: Record<string, unknown>[]) =>
         const body = getMessageBody(event);
         const isText = isTextMessage(event);
         const isBot = event.sender === config.matrix.botName;
-        const isCommand = !!extractCommand(event);
+        const isCommand = isCommandMessage(event);
 
         if (body && isText && !isBot && !isCommand) {
           result.push({

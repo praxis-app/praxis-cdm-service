@@ -23,7 +23,7 @@ const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
 const handleMatrixMessageEvent = async (event: Record<string, unknown>) => {
   const isText = isTextMessage(event);
   const isBot = event.sender === config.matrix.botName;
-  const isCommand = !!commandsService.extractCommand(event);
+  const isCommand = commandsService.isCommandMessage(event);
 
   if (isText && isCommand && !isBot) {
     await commandsService.handleCommandExecution(event);
