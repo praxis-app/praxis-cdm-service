@@ -1,5 +1,6 @@
 import {
   getChatSummary,
+  getCompromises,
   getDisagreements,
   isReadyForProposal,
 } from '../chat-analysis/chat-analysis.service';
@@ -118,6 +119,52 @@ export const handleDisagreementsCommand = async (
     await api.sendBotMessage(
       roomId,
       'Sorry, I encountered an error while checking for disagreements. Please try again.',
+    );
+  }
+};
+
+export const handleCompromisesCommand = async (
+  event: Record<string, unknown>,
+) => {
+  try {
+    const roomId = event.room_id as string;
+    const response = await api.getRoomMessages(roomId);
+
+    const events = response.chunk || [];
+    const messages = prepareMessages(events);
+
+    if (messages.length === 0) {
+      await api.sendBotMessage(
+        roomId,
+        'No messages found in this room to check for compromises.',
+      );
+      return;
+    }
+
+    console.info('🔍 Checking for compromises');
+    const start = Date.now();
+    const { compromises, error } = await getCompromises({ messages });
+
+    const plural = compromises.length === 1 ? '' : 's';
+    const count = `${compromises.length} compromise${plural} found`;
+    const separator = compromises.length > 0 ? ':' : '';
+    let message = `${count} (${Date.now() - start}ms)${separator}`;
+
+    for (const [index, compromise] of compromises.entries()) {
+      message += `\n\n${index + 1}. ${compromise}`;
+    }
+
+    if (error) {
+      message += `\n\nError: ${error}`;
+    }
+
+    await api.sendBotMessage(roomId, message);
+  } catch (error) {
+    console.error('Error handling compromises command', error);
+    const roomId = event.room_id as string;
+    await api.sendBotMessage(
+      roomId,
+      'Sorry, I encountered an error while checking for compromises. Please try again.',
     );
   }
 };

@@ -2,6 +2,7 @@ import { Commands } from '../commands/commands.constants';
 import {
   handleConsensusCommand,
   handleDisagreementsCommand,
+  handleCompromisesCommand,
   handleSummaryCommand,
 } from '../commands/commands.service';
 import { config } from '../config/config';
@@ -34,6 +35,9 @@ const handleMatrixMessageEvent = async (event: Record<string, unknown>) => {
   }
   if (body.toLowerCase().startsWith(Commands.Disagreements)) {
     await handleDisagreementsCommand(event);
+  }
+  if (body.toLowerCase().startsWith(Commands.Compromises)) {
+    await handleCompromisesCommand(event);
   }
 };
 
