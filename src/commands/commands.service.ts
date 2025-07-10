@@ -6,44 +6,42 @@ import {
 } from '../chat-analysis/chat-analysis.service';
 import { config } from '../config/config';
 import { api } from '../matrix/matrix.client';
+import { getMessageBody, isTextMessage } from '../matrix/matrix.utils';
 
-export enum Commands {
+enum Commands {
   Summary = '/summary',
   Consensus = '/consensus',
   Disagreements = '/disagreements',
   Compromises = '/compromises',
-  DraftProposal = '/proposal',
+  // DraftProposal = '/proposal',
 }
 
 export const handleCommandExecution = async (
   event: Record<string, unknown>,
 ) => {
-  const content = event.content as Record<string, unknown>;
-  const body = content?.body as string | undefined;
-  if (!body) {
-    return;
-  }
+  const commandHandlers: Record<
+    Commands,
+    (event: Record<string, unknown>) => Promise<void>
+  > = {
+    [Commands.Summary]: handleSummaryCommand,
+    [Commands.Consensus]: handleConsensusCommand,
+    [Commands.Disagreements]: handleDisagreementsCommand,
+    [Commands.Compromises]: handleCompromisesCommand,
+  };
 
-  // TODO: Uncomment when ready to use
-  // const commandHandlers = {
-  //   [Commands.Summary]: handleSummaryCommand,
-  //   [Commands.Consensus]: handleConsensusCommand,
-  //   [Commands.Disagreements]: handleDisagreementsCommand,
-  //   [Commands.Compromises]: handleCompromisesCommand,
-  // };
+  const command = extractCommand(event);
+  if (!command) {
+    throw new Error('No valid command found in message');
+  }
+  await commandHandlers[command](event);
+};
 
-  if (body.toLowerCase().startsWith(Commands.Summary)) {
-    await handleSummaryCommand(event);
-  }
-  if (body.toLowerCase().startsWith(Commands.Consensus)) {
-    await handleConsensusCommand(event);
-  }
-  if (body.toLowerCase().startsWith(Commands.Disagreements)) {
-    await handleDisagreementsCommand(event);
-  }
-  if (body.toLowerCase().startsWith(Commands.Compromises)) {
-    await handleCompromisesCommand(event);
-  }
+// TODO: Determine whether this should leverage the extractCommand function
+export const isCommandMessage = (event: Record<string, unknown>) => {
+  const body = getMessageBody(event);
+  return Object.values(Commands).some((command) =>
+    body?.toLowerCase().startsWith(command),
+  );
 };
 
 const handleSummaryCommand = async (event: Record<string, unknown>) => {
@@ -201,11 +199,9 @@ const handleCompromisesCommand = async (event: Record<string, unknown>) => {
   }
 };
 
-export const isCommandMessage = (event: Record<string, unknown>) => {
-  const body = (event.content as Record<string, unknown>).body as
-    | string
-    | undefined;
-  return Object.values(Commands).some((command) =>
+const extractCommand = (event: Record<string, unknown>) => {
+  const body = getMessageBody(event);
+  return Object.values(Commands).find((command) =>
     body?.toLowerCase().startsWith(command),
   );
 };
@@ -218,28 +214,21 @@ const prepareMessages = (events: Record<string, unknown>[]) =>
   events
     .reduce(
       (
-        acc: { sender: string; body: string }[],
+        result: { sender: string; body: string }[],
         event: Record<string, unknown>,
       ) => {
-        const body = (event.content as Record<string, unknown>).body as
-          | string
-          | undefined;
-
-        const isTextMessage =
-          body &&
-          event.type === 'm.room.message' &&
-          (event.content as Record<string, unknown>)?.msgtype === 'm.text';
-
+        const body = getMessageBody(event);
+        const isText = isTextMessage(event);
         const isBot = event.sender === config.matrix.botName;
         const isCommand = isCommandMessage(event);
 
-        if (isTextMessage && !isBot && !isCommand) {
-          acc.push({
+        if (body && isText && !isBot && !isCommand) {
+          result.push({
             sender: event.sender as string,
             body,
           });
         }
-        return acc;
+        return result;
       },
       [] as { sender: string; body: string }[],
     )
