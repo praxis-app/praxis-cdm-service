@@ -1,4 +1,5 @@
 import {
+  draftProposal,
   getChatSummary,
   getCompromises,
   getDisagreements,
@@ -13,7 +14,7 @@ enum Commands {
   Consensus = '/consensus',
   Disagreements = '/disagreements',
   Compromises = '/compromises',
-  // DraftProposal = '/proposal',
+  DraftProposal = '/draft-proposal',
 }
 
 export const handleCommandExecution = async (
@@ -27,6 +28,7 @@ export const handleCommandExecution = async (
     [Commands.Consensus]: handleConsensusCommand,
     [Commands.Disagreements]: handleDisagreementsCommand,
     [Commands.Compromises]: handleCompromisesCommand,
+    [Commands.DraftProposal]: handleDraftProposalCommand,
   };
 
   const command = extractCommand(event);
@@ -96,7 +98,7 @@ const handleConsensusCommand = async (event: Record<string, unknown>) => {
     const { isReady, reason, error } = await isReadyForProposal({ messages });
     let message = `${isReady ? '✅' : '❌'} - ${reason} (${Date.now() - start}ms)`;
     if (error) {
-      message += `\n\nError: ${error}`;
+      message += `\nError: ${error}`;
     }
 
     await api.sendBotMessage(roomId, message);
@@ -140,7 +142,7 @@ const handleDisagreementsCommand = async (event: Record<string, unknown>) => {
     }
 
     if (error) {
-      message += `\n\nError: ${error}`;
+      message += `\nError: ${error}`;
     }
 
     await api.sendBotMessage(roomId, message);
@@ -184,7 +186,7 @@ const handleCompromisesCommand = async (event: Record<string, unknown>) => {
     }
 
     if (error) {
-      message += `\n\nError: ${error}`;
+      message += `\nError: ${error}`;
     }
 
     await api.sendBotMessage(roomId, message);
@@ -194,6 +196,41 @@ const handleCompromisesCommand = async (event: Record<string, unknown>) => {
     await api.sendBotMessage(
       roomId,
       'Sorry, I encountered an error while checking for compromises. Please try again.',
+    );
+  }
+};
+
+const handleDraftProposalCommand = async (event: Record<string, unknown>) => {
+  try {
+    const roomId = event.room_id as string;
+    const response = await api.getRoomMessages(roomId);
+
+    const events = response.chunk || [];
+    const messages = prepareMessages(events);
+
+    if (messages.length === 0) {
+      await api.sendBotMessage(
+        roomId,
+        'No messages found in this room to draft a proposal.',
+      );
+      return;
+    }
+
+    console.info('✍️ Drafting proposal');
+    const start = Date.now();
+    const { title, description, error } = await draftProposal({ messages });
+    let message = `Drafted proposal: ${title}\n${description} (${Date.now() - start}ms)`;
+    if (error) {
+      message += `\nError: ${error}`;
+    }
+
+    await api.sendBotMessage(roomId, message);
+  } catch (error) {
+    console.error('Error handling draft proposal command', error);
+    const roomId = event.room_id as string;
+    await api.sendBotMessage(
+      roomId,
+      'Sorry, I encountered an error while drafting a proposal. Please try again.',
     );
   }
 };
