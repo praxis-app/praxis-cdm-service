@@ -36,10 +36,9 @@ export const handleCommandExecution = async (
   await commandHandlers[command](event);
 };
 
-// TODO: Determine whether this should leverage the extractCommand function
-export const isCommandMessage = (event: Record<string, unknown>) => {
+export const extractCommand = (event: Record<string, unknown>) => {
   const body = getMessageBody(event);
-  return Object.values(Commands).some((command) =>
+  return Object.values(Commands).find((command) =>
     body?.toLowerCase().startsWith(command),
   );
 };
@@ -199,13 +198,6 @@ const handleCompromisesCommand = async (event: Record<string, unknown>) => {
   }
 };
 
-const extractCommand = (event: Record<string, unknown>) => {
-  const body = getMessageBody(event);
-  return Object.values(Commands).find((command) =>
-    body?.toLowerCase().startsWith(command),
-  );
-};
-
 /**
  * Filter for text messages, not from the bot, and not a command.
  * Extract sender and body.
@@ -220,7 +212,7 @@ const prepareMessages = (events: Record<string, unknown>[]) =>
         const body = getMessageBody(event);
         const isText = isTextMessage(event);
         const isBot = event.sender === config.matrix.botName;
-        const isCommand = isCommandMessage(event);
+        const isCommand = !!extractCommand(event);
 
         if (body && isText && !isBot && !isCommand) {
           result.push({
