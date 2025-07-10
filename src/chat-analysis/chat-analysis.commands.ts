@@ -51,7 +51,8 @@ export const handleConsensusCommand = async (
 ) => {
   try {
     const roomId = event.room_id as string;
-    const response = await api.getRoomMessages(roomId);
+    const limit = extractLimitParam(event);
+    const response = await api.getRoomMessages(roomId, limit);
 
     const events = response.chunk || [];
     const messages = prepareMessages(events);
@@ -88,7 +89,8 @@ export const handleDisagreementsCommand = async (
 ) => {
   try {
     const roomId = event.room_id as string;
-    const response = await api.getRoomMessages(roomId);
+    const limit = extractLimitParam(event);
+    const response = await api.getRoomMessages(roomId, limit);
 
     const events = response.chunk || [];
     const messages = prepareMessages(events);
@@ -134,7 +136,8 @@ export const handleCompromisesCommand = async (
 ) => {
   try {
     const roomId = event.room_id as string;
-    const response = await api.getRoomMessages(roomId);
+    const limit = extractLimitParam(event);
+    const response = await api.getRoomMessages(roomId, limit);
 
     const events = response.chunk || [];
     const messages = prepareMessages(events);
@@ -180,7 +183,8 @@ export const handleDraftProposalCommand = async (
 ) => {
   try {
     const roomId = event.room_id as string;
-    const response = await api.getRoomMessages(roomId);
+    const limit = extractLimitParam(event);
+    const response = await api.getRoomMessages(roomId, limit);
 
     const events = response.chunk || [];
     const messages = prepareMessages(events);
