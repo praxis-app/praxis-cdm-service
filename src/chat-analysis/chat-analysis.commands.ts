@@ -10,10 +10,14 @@ import {
   isReadyForProposal,
 } from './chat-analysis.service';
 
+const MIN_MESSAGE_LIMIT = 3;
+const MAX_MESSAGE_LIMIT = 100;
+
 export const handleSummaryCommand = async (event: Record<string, unknown>) => {
   try {
     const roomId = event.room_id as string;
-    const response = await api.getRoomMessages(roomId);
+    const limit = extractLimitParam(event);
+    const response = await api.getRoomMessages(roomId, limit);
 
     const events = response.chunk || [];
     const messages = prepareMessages(events);
@@ -235,3 +239,20 @@ const prepareMessages = (events: Record<string, unknown>[]) =>
       [] as { sender: string; body: string }[],
     )
     .reverse();
+
+const parseCommand = (event: Record<string, unknown>) => {
+  const body = getMessageBody(event);
+  const parts = body?.trim().split(/\s+/);
+  const command = parts?.[0]?.toLowerCase() || '';
+  const args = parts?.slice(1) || [];
+  return { command, args };
+};
+
+const extractLimitParam = (event: Record<string, unknown>) => {
+  const { args } = parseCommand(event);
+  const limit = args[0] ? parseInt(args[0]) : undefined;
+  if (typeof limit !== 'number') {
+    return;
+  }
+  return Math.min(Math.max(limit, MIN_MESSAGE_LIMIT), MAX_MESSAGE_LIMIT);
+};
