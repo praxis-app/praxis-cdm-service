@@ -42,6 +42,13 @@ describe('getChatSummary', () => {
       expect(typeof summary).toBe('string');
       expect(summary.length).toBeGreaterThan(0);
 
+      // Ensure summary is shorter than the original messages
+      const conversationSize = messages.reduce(
+        (acc, { sender, body }) => acc + sender.length + body.length,
+        0,
+      );
+      expect(summary.length).toBeLessThan(conversationSize);
+
       // Check if the summary contains the expected keywords
       for (const keywordOrKeywords of expectedSummaryKeywords) {
         if (Array.isArray(keywordOrKeywords)) {
