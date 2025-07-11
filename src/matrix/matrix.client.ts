@@ -39,11 +39,11 @@ class MatrixClient {
     stateKey: string,
     content: Record<string, unknown>,
   ) => {
-    return this.executeRequest(
-      'put',
-      `/rooms/${encodeURIComponent(roomId)}/state/${encodeURIComponent(eventType)}/${encodeURIComponent(stateKey)}`,
-      { data: content },
-    );
+    const roomPath = `/rooms/${encodeURIComponent(roomId)}`;
+    const statePath = `/state/${encodeURIComponent(eventType)}/${encodeURIComponent(stateKey)}`;
+    return this.executeRequest('put', `${roomPath}${statePath}`, {
+      data: content,
+    });
   };
 
   private async executeRequest<T = void>(
