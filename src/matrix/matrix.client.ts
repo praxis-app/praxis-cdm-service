@@ -6,7 +6,7 @@ class MatrixClient {
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: `${config.matrix.hsUrl}/_matrix/client/r0`,
+      baseURL: `${config.matrix.hsUrl}/_matrix/client/v3`,
     });
   }
 
@@ -30,6 +30,19 @@ class MatrixClient {
       'post',
       `/rooms/${encodeURIComponent(roomId)}/send/m.room.message`,
       { data: { msgtype: 'm.text', body: message } },
+    );
+  };
+
+  setStateEvent = async (
+    roomId: string,
+    eventType: string,
+    stateKey: string,
+    content: Record<string, unknown>,
+  ) => {
+    return this.executeRequest(
+      'put',
+      `/rooms/${encodeURIComponent(roomId)}/state/${encodeURIComponent(eventType)}/${encodeURIComponent(stateKey)}`,
+      { data: content },
     );
   };
 
@@ -59,4 +72,5 @@ class MatrixClient {
   }
 }
 
+// TODO: Rename to matrixClient
 export const api = new MatrixClient();

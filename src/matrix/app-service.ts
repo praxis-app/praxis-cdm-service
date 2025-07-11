@@ -1,6 +1,11 @@
 import { EventEmitter } from 'events';
 import { Request, Response } from 'express';
 import { config } from '../config/config';
+import { api } from './matrix.client';
+
+const BOT_DISPLAY_NAME = 'praxis-bot';
+const BOT_AVATAR_URL =
+  'https://raw.githubusercontent.com/praxis-app/media-assets/refs/heads/main/images/app-icon-color-256px.png';
 
 declare interface AppService {
   /**
@@ -114,6 +119,16 @@ class AppService extends EventEmitter {
 
     this.lastProcessedTxnId = txnId;
     res.send({});
+  };
+
+  joinRoom = async (roomId: string) => {
+    await api.setStateEvent(roomId, 'm.room.member', config.matrix.botName, {
+      membership: 'join',
+      avatar_url: BOT_AVATAR_URL,
+      displayname: BOT_DISPLAY_NAME,
+    });
+    await api.sendBotMessage(roomId, 'Hey everyone 👋');
+    console.info(`✅ Successfully joined room: ${roomId}`);
   };
 
   private isInvalidToken = (req: Request, res: Response) => {

@@ -1,7 +1,6 @@
 import * as commandsService from '../commands/commands.service';
 import { config } from '../config/config';
 import { appService } from './app-service';
-import { api } from './matrix.client';
 import { getMessageBody, isTextMessage } from './matrix.utils';
 
 export const initMatrixEventHandlers = () => {
@@ -15,8 +14,7 @@ const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
   const stateKey = event.state_key as string;
 
   if (membership === 'invite' && stateKey === config.matrix.botName) {
-    await api.joinRoom(event.room_id as string);
-    console.info(`✅ Successfully joined room: ${event.room_id}`);
+    await appService.joinRoom(event.room_id as string);
   }
 };
 
