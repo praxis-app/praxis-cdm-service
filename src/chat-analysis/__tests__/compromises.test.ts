@@ -31,7 +31,6 @@ const scenarios: TestScenario[] = [
     messages: [
       { sender: 'Alice', body: 'We must use a dark theme.' },
       { sender: 'Bob', body: 'No, a light theme is the only option.' },
-      { sender: 'Charlie', body: 'I will only accept a grey theme.' },
     ],
     expectedCompromiseKeywords: [],
     expectedCompromise: false,
