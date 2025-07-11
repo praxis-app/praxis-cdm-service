@@ -11,15 +11,48 @@ interface TestScenario {
 // Centralized test scenarios
 const scenarios: TestScenario[] = [
   {
-    description: 'should draft a proposal from the conversation',
+    description: 'should draft a proposal for a meeting schedule',
     messages: [
       { sender: 'Alice', body: 'So we all agree on meeting Thursdays at 2pm?' },
       { sender: 'Bob', body: 'Yes, Thursday works for me' },
       { sender: 'Charlie', body: 'Thursday at 2pm is perfect' },
       { sender: 'Alice', body: "Great, let's lock that in" },
     ],
-    expectedTitleKeywords: [['meeting', 'schedule']],
+    expectedTitleKeywords: [['meeting', 'decision'], 'thursday', '2pm'],
     expectedDescriptionKeywords: ['thursday', ['2pm', '2 pm']],
+  },
+  {
+    description: 'should draft a proposal for a technical decision',
+    messages: [
+      {
+        sender: 'Dev1',
+        body: 'I think we should use TypeScript for the new service.',
+      },
+      { sender: 'Dev2', body: 'Agreed, TypeScript will give us type safety.' },
+      {
+        sender: 'Dev3',
+        body: "I was leaning towards Python, but I can agree with TypeScript if we don't use strict mode.",
+      },
+      {
+        sender: 'Dev1',
+        body: 'Deal. TypeScript without strict mode it is.',
+      },
+    ],
+    expectedTitleKeywords: [
+      ['technical', 'decision'],
+      ['typescript', 'language'],
+    ],
+    expectedDescriptionKeywords: ['typescript', 'strict'],
+  },
+  {
+    description: 'should handle conversations with no clear outcome gracefully',
+    messages: [
+      { sender: 'Alice', body: 'Should we order pizza or tacos?' },
+      { sender: 'Bob', body: 'I like both.' },
+      { sender: 'Charlie', body: 'Maybe we should just flip a coin.' },
+    ],
+    expectedTitleKeywords: [['proposal', 'decision', 'food']],
+    expectedDescriptionKeywords: [['pizza', 'tacos', 'food']],
   },
 ];
 

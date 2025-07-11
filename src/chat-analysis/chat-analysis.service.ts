@@ -109,7 +109,7 @@ export const draftProposal = async ({ messages }: Chat) => {
 
   try {
     const content = await executePrompt({
-      model: 'mistral:7b',
+      model: 'llama3.1:8b',
       template: DRAFT_PROPOSAL_PROMPT,
       variables: { chatData },
     });
