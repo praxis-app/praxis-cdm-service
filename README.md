@@ -1,6 +1,6 @@
 # Praxis CDM Service
 
-Matrix application service that adds collaborative decision-making (CDM) capabilities to Matrix chat rooms with support for proposals, vote validation, consensus tracking, as well as optional LLM-assisted facilitation.
+Matrix application service that adds collaborative decision-making (CDM) capabilities to Matrix chat rooms with support for proposals, vote validation, consensus tracking, and optional LLM-assisted facilitation.
 
 ## Work in progress
 
@@ -17,17 +17,6 @@ $ npm install
 # Copy environment variables
 $ cp .env.example .env
 ```
-
-### Required environment variables
-
-- `PORT` - Server port (default: 3200)
-- `DB_HOST` - Database host
-- `DB_SCHEMA` - Database name
-- `DB_USERNAME` - Database username
-- `DB_PASSWORD` - Database password
-- `DB_PORT` - Database port
-- `MATRIX_HS_TOKEN` - Your Matrix homeserver token for the application service
-- `MATRIX_HS_URL` - URL of your Matrix homeserver (default: http://localhost:8008)
 
 ## Docker
 
