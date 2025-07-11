@@ -34,8 +34,9 @@ describe('getChatSummary', () => {
   // Parameterized test for all defined scenarios
   test.each(scenarios)(
     '$description',
-    async ({ messages, expectedSummaryKeywords }) => {
+    async ({ description, messages, expectedSummaryKeywords }) => {
       const summary = await getChatSummary({ messages });
+      console.info({ description, result: summary });
 
       // Ensure the summary is a non-empty string
       expect(typeof summary).toBe('string');

@@ -39,8 +39,14 @@ describe('getCompromises', () => {
   // Parameterized test for all defined scenarios
   test.each(scenarios)(
     '$description',
-    async ({ messages, expectedCompromiseKeywords, expectedCompromise }) => {
+    async ({
+      description,
+      expectedCompromise,
+      expectedCompromiseKeywords,
+      messages,
+    }) => {
       const result = await getCompromises({ messages });
+      console.info({ description, result });
 
       // Ensure the result has the correct shape
       expect(result).toHaveProperty('compromises');

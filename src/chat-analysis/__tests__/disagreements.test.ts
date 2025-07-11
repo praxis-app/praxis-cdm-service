@@ -46,11 +46,13 @@ describe('getDisagreements', () => {
   test.each(scenarios)(
     '$description',
     async ({
-      messages,
-      expectedDisagreementKeywords,
+      description,
       expectedDisagreement,
+      expectedDisagreementKeywords,
+      messages,
     }) => {
       const result = await getDisagreements({ messages });
+      console.info({ description, result });
 
       // Ensure the result has the correct shape
       expect(result).toHaveProperty('disagreements');

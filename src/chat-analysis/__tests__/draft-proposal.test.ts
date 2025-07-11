@@ -59,11 +59,13 @@ describe('draftProposal', () => {
   test.each(scenarios)(
     '$description',
     async ({
-      messages,
-      expectedTitleKeywords,
+      description,
       expectedDescriptionKeywords,
+      expectedTitleKeywords,
+      messages,
     }) => {
       const result = await draftProposal({ messages });
+      console.info({ description, result });
 
       // Ensure the result has the correct shape
       expect(result).toHaveProperty('title');
@@ -83,13 +85,15 @@ describe('draftProposal', () => {
       }
 
       // Check if the description contains the expected keywords
-      const description = result.description.toLowerCase();
+      const proposalDescription = result.description.toLowerCase();
       for (const keywordOrKeywords of expectedDescriptionKeywords) {
         if (Array.isArray(keywordOrKeywords)) {
-          const found = keywordOrKeywords.some((k) => description.includes(k));
+          const found = keywordOrKeywords.some((k) =>
+            proposalDescription.includes(k),
+          );
           expect(found).toBe(true);
         } else {
-          expect(description).toContain(keywordOrKeywords);
+          expect(proposalDescription).toContain(keywordOrKeywords);
         }
       }
     },

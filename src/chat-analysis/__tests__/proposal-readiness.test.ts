@@ -53,8 +53,8 @@ describe('isReadyForProposal', () => {
   test.each(scenarios)(
     '$description',
     async ({ description, messages, expected, reasonContains }) => {
-      console.info(`\nScenario: ${description}`);
       const result = await isReadyForProposal({ messages });
+      console.info({ description, result });
 
       // Ensure the response has the correct shape
       expect(result).toHaveProperty('isReady');
