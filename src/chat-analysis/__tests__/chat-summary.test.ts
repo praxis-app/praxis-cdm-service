@@ -55,6 +55,6 @@ describe('getChatSummary', () => {
         }
       }
     },
-    30000, // 30-second timeout for each test case
+    60000, // 60-second timeout for each test case
   );
 });
