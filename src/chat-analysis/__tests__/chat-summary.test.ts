@@ -8,7 +8,7 @@ interface TestScenario {
 
 const scenarios: TestScenario[] = [
   {
-    description: 'should generate a concise summary of the conversation',
+    description: 'should summarize a meeting schedule discussion',
     messages: [
       { sender: 'Alice', body: 'We need to decide on our meeting schedule' },
       { sender: 'Bob', body: 'What are the options?' },
@@ -22,10 +22,28 @@ const scenarios: TestScenario[] = [
       { sender: 'Alice', body: "Great, let's lock that in" },
     ],
     expectedSummaryKeywords: [
-      ['schedule', 'scheduling'],
+      ['schedule', 'scheduling', 'time'],
       ['2pm', '2 pm'],
       'meeting',
       'thursday',
+    ],
+  },
+  {
+    description: 'should summarize food co-op planning discussion',
+    messages: [
+      { sender: 'Sarah', body: 'We need to order more organic vegetables' },
+      { sender: 'Mike', body: 'The current supplier is too expensive' },
+      { sender: 'Lisa', body: 'I found a local farm that offers 20% discount' },
+      { sender: 'Sarah', body: 'What about delivery schedule?' },
+      { sender: 'Mike', body: 'They can deliver twice weekly' },
+      { sender: 'Lisa', body: 'Perfect, should we switch to them?' },
+      { sender: 'Sarah', body: 'Yes, approved for next month' },
+    ],
+    expectedSummaryKeywords: [
+      ['vegetables', 'organic'],
+      ['supplier', 'farm'],
+      ['discount', 'cheaper'],
+      'delivery',
     ],
   },
 ];
