@@ -11,9 +11,7 @@
     "typeorm:gen": "npm run typeorm migration:generate -- -p -d ./src/database/data-source.ts",
     "typeorm:run": "npm run typeorm migration:run -- -d ./src/database/data-source.ts",
     "build": "tsc",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test": "jest"
   },
   "dependencies": {
     "axios": "^1.8.4",
