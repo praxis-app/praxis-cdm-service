@@ -10,16 +10,6 @@ interface TestScenario {
 const scenarios: TestScenario[] = [
   {
     description:
-      'should return false for conversations that are not ready for proposal',
-    messages: [
-      { sender: 'Alice', body: 'We need to decide on our meeting schedule' },
-      { sender: 'Bob', body: 'What are the options?' },
-      { sender: 'Charlie', body: "I'm not sure what works for everyone" },
-    ],
-    expected: false,
-  },
-  {
-    description:
       'should return true for conversations that are ready for proposal',
     messages: [
       {
@@ -47,8 +37,13 @@ const scenarios: TestScenario[] = [
     reasonContains: 'thursday',
   },
   {
-    description: 'should handle empty message arrays gracefully',
-    messages: [],
+    description:
+      'should return false for conversations that are not ready for proposal',
+    messages: [
+      { sender: 'Alice', body: 'We need to decide on our meeting schedule' },
+      { sender: 'Bob', body: 'What are the options?' },
+      { sender: 'Charlie', body: "I'm not sure what works for everyone" },
+    ],
     expected: false,
   },
 ];

@@ -22,10 +22,10 @@ const scenarios: TestScenario[] = [
       { sender: 'Alice', body: "Great, let's lock that in" },
     ],
     expectedSummaryKeywords: [
-      'meeting',
       ['schedule', 'scheduling'],
-      'thursday',
       ['2pm', '2 pm'],
+      'meeting',
+      'thursday',
     ],
   },
 ];
