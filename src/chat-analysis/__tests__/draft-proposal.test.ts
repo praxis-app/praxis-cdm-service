@@ -13,16 +13,13 @@ const scenarios: TestScenario[] = [
   {
     description: 'should draft a proposal from the conversation',
     messages: [
-      { sender: 'Alice', body: 'So we all agree on meeting Thursdays at 2pm?', },
+      { sender: 'Alice', body: 'So we all agree on meeting Thursdays at 2pm?' },
       { sender: 'Bob', body: 'Yes, Thursday works for me' },
       { sender: 'Charlie', body: 'Thursday at 2pm is perfect' },
       { sender: 'Alice', body: "Great, let's lock that in" },
     ],
     expectedTitleKeywords: [['meeting', 'schedule']],
-    expectedDescriptionKeywords: [
-      'thursday',
-      ['2pm', '2 pm'],
-    ],
+    expectedDescriptionKeywords: ['thursday', ['2pm', '2 pm']],
   },
 ];
 
@@ -30,7 +27,11 @@ describe('draftProposal', () => {
   // Parameterized test for all defined scenarios
   test.each(scenarios)(
     '$description',
-    async ({ messages, expectedTitleKeywords, expectedDescriptionKeywords }) => {
+    async ({
+      messages,
+      expectedTitleKeywords,
+      expectedDescriptionKeywords,
+    }) => {
       const result = await draftProposal({ messages });
 
       // Ensure the result has the correct shape
