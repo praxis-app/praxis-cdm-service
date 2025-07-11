@@ -1,6 +1,5 @@
 import { getDisagreements } from '../chat-analysis.service';
 
-// Define the shape of a test scenario
 interface TestScenario {
   description: string;
   messages: { sender: string; body: string }[];
@@ -8,7 +7,6 @@ interface TestScenario {
   expectedDisagreement: boolean;
 }
 
-// Centralized test scenarios
 const scenarios: TestScenario[] = [
   {
     description: 'should identify disagreements in the conversation',

@@ -1,6 +1,5 @@
 import { draftProposal } from '../chat-analysis.service';
 
-// Define the shape of a test scenario
 interface TestScenario {
   description: string;
   messages: { sender: string; body: string }[];
@@ -8,7 +7,6 @@ interface TestScenario {
   expectedDescriptionKeywords: (string | string[])[];
 }
 
-// Centralized test scenarios
 const scenarios: TestScenario[] = [
   {
     description: 'should draft a proposal for a meeting schedule',

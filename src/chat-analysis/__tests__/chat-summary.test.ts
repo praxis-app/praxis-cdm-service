@@ -1,13 +1,11 @@
 import { getChatSummary } from '../chat-analysis.service';
 
-// Define the shape of a test scenario
 interface TestScenario {
   description: string;
   messages: { sender: string; body: string }[];
   expectedSummaryKeywords: (string | string[])[];
 }
 
-// Centralized test scenarios
 const scenarios: TestScenario[] = [
   {
     description: 'should generate a concise summary of the conversation',
