@@ -6,7 +6,6 @@ import morgan from 'morgan';
 import { appRouter } from './app.router';
 import { config } from './config/config';
 import { dataSource } from './database/data-source';
-import { initMatrixEventHandlers } from './matrix/matrix.events';
 import { getOllamaInitMessage } from './ollama/ollama.service';
 
 (async () => {
@@ -32,8 +31,6 @@ import { getOllamaInitMessage } from './ollama/ollama.service';
   app.use(cors());
 
   app.use('/', appRouter);
-
-  initMatrixEventHandlers();
 
   app.listen(port, () => {
     const url = `http://localhost:${port}`;

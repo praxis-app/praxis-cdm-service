@@ -2,6 +2,10 @@ import { EventEmitter } from 'events';
 import { NextFunction, Request, Response } from 'express';
 import { config } from '../config/config';
 import { matrixClient } from './matrix.client';
+import {
+  handleMatrixMessageEvent,
+  handleMatrixRoomMemberEvent,
+} from './matrix.events';
 
 const BOT_DISPLAY_NAME = 'praxis-bot';
 const BOT_AVATAR_URL =
@@ -77,6 +81,10 @@ class AppService extends EventEmitter {
 
   constructor(private hsToken: string) {
     super();
+
+    // Initialize event handlers for Matrix events
+    this.on('type:m.room.member', handleMatrixRoomMemberEvent);
+    this.on('type:m.room.message', handleMatrixMessageEvent);
   }
 
   handleTransaction = (req: Request, res: Response) => {

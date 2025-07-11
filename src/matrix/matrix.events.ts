@@ -3,12 +3,9 @@ import { config } from '../config/config';
 import { appService } from './app-service';
 import { getMessageBody, isTextMessage } from './matrix.utils';
 
-export const initMatrixEventHandlers = () => {
-  appService.on('type:m.room.message', handleMatrixMessageEvent);
-  appService.on('type:m.room.member', handleMatrixRoomMemberEvent);
-};
-
-const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
+export const handleMatrixRoomMemberEvent = async (
+  event: Record<string, unknown>,
+) => {
   const content = event.content as Record<string, unknown>;
   const membership = content?.membership as string;
   const stateKey = event.state_key as string;
@@ -18,7 +15,9 @@ const handleMatrixRoomMemberEvent = async (event: Record<string, unknown>) => {
   }
 };
 
-const handleMatrixMessageEvent = async (event: Record<string, unknown>) => {
+export const handleMatrixMessageEvent = async (
+  event: Record<string, unknown>,
+) => {
   const body = getMessageBody(event);
   const isText = isTextMessage(event);
   const isBot = event.sender === config.matrix.botName;
