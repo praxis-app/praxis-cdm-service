@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { config } from '../config/config';
 import { matrixClient } from './matrix.client';
 
@@ -80,10 +80,6 @@ class AppService extends EventEmitter {
   }
 
   handleTransaction = (req: Request, res: Response) => {
-    if (this.isInvalidToken(req, res)) {
-      return;
-    }
-
     const { txnId } = req.params;
     if (!txnId) {
       res.send('Missing transaction ID.');
@@ -136,19 +132,18 @@ class AppService extends EventEmitter {
     console.info(`✅ Successfully joined room: ${roomId}`);
   };
 
-  private isInvalidToken = (req: Request, res: Response) => {
-    const providedToken =
-      req.headers.authorization?.substring('Bearer '.length) ??
-      req.query.access_token;
+  authenticate = async (req: Request, res: Response, next: NextFunction) => {
+    let [type, token] = req.headers.authorization?.split(' ') ?? [];
+    token = token ?? req.query.access_token;
 
-    if (providedToken !== this.hsToken) {
+    if (type !== 'Bearer' || !token || token !== this.hsToken) {
       res.status(403).send({
         errcode: 'M_FORBIDDEN',
         error: 'Bad token supplied',
       });
-      return true;
+      return;
     }
-    return false;
+    next();
   };
 }
 
