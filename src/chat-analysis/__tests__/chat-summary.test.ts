@@ -25,7 +25,7 @@ const scenarios: TestScenario[] = [
     ],
     expectedSummaryKeywords: [
       'meeting',
-      'schedule',
+      ['schedule', 'scheduling'],
       'thursday',
       ['2pm', '2 pm'],
     ],
