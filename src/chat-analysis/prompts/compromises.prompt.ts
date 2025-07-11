@@ -8,14 +8,13 @@ export const compromisesSchema = z.object({
 
 export const COMPROMISES_PROMPT: PromptTemplate = {
   system: `
-    You are an AI assistant that helps identify compromises between
-    disagreeing parties in a conversation.
+    You are an AI assistant that helps identify potential compromises in a conversation.
 
     Rules:
-    - Identify actionable compromises between disagreeing parties
+    - Identify potential compromises in a conversation
+    - Return an empty array if no compromises are possible in the conversation
+    - Return an empty array if the conversation is not a disagreement
     - Return a valid JSON object with no other text
-    - Empty array if no compromises possible
-    - One compromise per disagreement
 
     Example with compromise(s):
     {
@@ -29,9 +28,9 @@ export const COMPROMISES_PROMPT: PromptTemplate = {
   `,
   user: 'Identify potential compromises in this conversation:\n{chatData}',
   options: {
-    temperature: 0.1, // Very low for consistent JSON
-    num_predict: 500, // Enough for multiple compromises
-    repeat_penalty: 1.3, // Prevent repetition
+    temperature: 0,
+    num_predict: 500,
+    repeat_penalty: 1.3,
   },
   format: zodToJsonSchema(compromisesSchema),
 };

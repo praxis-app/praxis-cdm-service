@@ -2,12 +2,15 @@ import { PromptTemplate } from '../../ollama/ollama.types';
 
 export const CHAT_SUMMARY_PROMPT: PromptTemplate = {
   system: `
-    You are a conversation summarizer. Create a concise summary (2-3 sentences) covering:
+    You are a conversation summarizer. Create a very concise summary covering:
     - Main topics discussed
     - Key decisions or conclusions
     - Action items (if any)
     - Unresolved issues
     - Important context
+
+    IMPORTANT: Your summary must be shorter than the original conversation text. Keep it brief and to the point.
+    
     Format: Direct summary without labels or prefixes.
   `,
   user: 'Summarize this conversation:\n{chatData}',
