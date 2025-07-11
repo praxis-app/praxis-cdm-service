@@ -5,6 +5,7 @@ interface TestScenario {
   description: string;
   messages: { sender: string; body: string }[];
   expectedCompromiseKeywords: (string | string[])[];
+  expectedCompromise: boolean;
 }
 
 // Centralized test scenarios
@@ -23,6 +24,17 @@ const scenarios: TestScenario[] = [
     expectedCompromiseKeywords: [
       ['2pm', '2 pm', 'afternoon', 'meet', 'agree', 'time'],
     ],
+    expectedCompromise: true,
+  },
+  {
+    description: 'should not identify compromises when none are possible',
+    messages: [
+      { sender: 'Alice', body: 'We must use a dark theme.' },
+      { sender: 'Bob', body: 'No, a light theme is the only option.' },
+      { sender: 'Charlie', body: 'I will only accept a grey theme.' },
+    ],
+    expectedCompromiseKeywords: [],
+    expectedCompromise: false,
   },
 ];
 
@@ -30,12 +42,18 @@ describe('getCompromises', () => {
   // Parameterized test for all defined scenarios
   test.each(scenarios)(
     '$description',
-    async ({ messages, expectedCompromiseKeywords }) => {
+    async ({ messages, expectedCompromiseKeywords, expectedCompromise }) => {
       const result = await getCompromises({ messages });
 
       // Ensure the result has the correct shape
       expect(result).toHaveProperty('compromises');
       expect(Array.isArray(result.compromises)).toBe(true);
+
+      if (expectedCompromise) {
+        expect(result.compromises.length).toBeGreaterThan(0);
+      } else {
+        expect(result.compromises.length).toBe(0);
+      }
 
       // Check if the compromises contain the expected keywords
       const allCompromises = result.compromises.join(' ').toLowerCase();
