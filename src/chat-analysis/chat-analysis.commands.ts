@@ -1,6 +1,6 @@
 import { isCommandMessage } from '../commands/commands.service';
 import { config } from '../config/config';
-import { api } from '../matrix/matrix.client';
+import { matrixClient } from '../matrix/matrix.client';
 import { getMessageBody, isTextMessage } from '../matrix/matrix.utils';
 import {
   draftProposal,
@@ -17,13 +17,13 @@ export const handleSummaryCommand = async (event: Record<string, unknown>) => {
   try {
     const roomId = event.room_id as string;
     const limit = extractLimitParam(event);
-    const response = await api.getRoomMessages(roomId, limit);
+    const response = await matrixClient.getRoomMessages(roomId, limit);
 
     const events = response.chunk || [];
     const messages = prepareMessages(events);
 
     if (messages.length === 0) {
-      await api.sendBotMessage(
+      await matrixClient.sendBotMessage(
         roomId,
         'No messages found in this room to summarize.',
       );
@@ -35,11 +35,11 @@ export const handleSummaryCommand = async (event: Record<string, unknown>) => {
     const summary = await getChatSummary({ messages });
     const message = `${summary} (${Date.now() - start}ms)`;
 
-    await api.sendBotMessage(roomId, message);
+    await matrixClient.sendBotMessage(roomId, message);
   } catch (error) {
     console.error('Error handling summary command', error);
     const roomId = event.room_id as string;
-    await api.sendBotMessage(
+    await matrixClient.sendBotMessage(
       roomId,
       'Sorry, I encountered an error while generating the summary. Please try again.',
     );
@@ -52,13 +52,13 @@ export const handleConsensusCommand = async (
   try {
     const roomId = event.room_id as string;
     const limit = extractLimitParam(event);
-    const response = await api.getRoomMessages(roomId, limit);
+    const response = await matrixClient.getRoomMessages(roomId, limit);
 
     const events = response.chunk || [];
     const messages = prepareMessages(events);
 
     if (messages.length === 0) {
-      await api.sendBotMessage(
+      await matrixClient.sendBotMessage(
         roomId,
         'No messages found in this room to check for consensus.',
       );
@@ -73,11 +73,11 @@ export const handleConsensusCommand = async (
       message += `\nError: ${error}`;
     }
 
-    await api.sendBotMessage(roomId, message);
+    await matrixClient.sendBotMessage(roomId, message);
   } catch (error) {
     console.error('Error handling consensus command', error);
     const roomId = event.room_id as string;
-    await api.sendBotMessage(
+    await matrixClient.sendBotMessage(
       roomId,
       'Sorry, I encountered an error while checking for consensus. Please try again.',
     );
@@ -90,13 +90,13 @@ export const handleDisagreementsCommand = async (
   try {
     const roomId = event.room_id as string;
     const limit = extractLimitParam(event);
-    const response = await api.getRoomMessages(roomId, limit);
+    const response = await matrixClient.getRoomMessages(roomId, limit);
 
     const events = response.chunk || [];
     const messages = prepareMessages(events);
 
     if (messages.length === 0) {
-      await api.sendBotMessage(
+      await matrixClient.sendBotMessage(
         roomId,
         'No messages found in this room to check for disagreements.',
       );
@@ -120,11 +120,11 @@ export const handleDisagreementsCommand = async (
       message += `\nError: ${error}`;
     }
 
-    await api.sendBotMessage(roomId, message);
+    await matrixClient.sendBotMessage(roomId, message);
   } catch (error) {
     console.error('Error handling disagreements command', error);
     const roomId = event.room_id as string;
-    await api.sendBotMessage(
+    await matrixClient.sendBotMessage(
       roomId,
       'Sorry, I encountered an error while checking for disagreements. Please try again.',
     );
@@ -137,13 +137,13 @@ export const handleCompromisesCommand = async (
   try {
     const roomId = event.room_id as string;
     const limit = extractLimitParam(event);
-    const response = await api.getRoomMessages(roomId, limit);
+    const response = await matrixClient.getRoomMessages(roomId, limit);
 
     const events = response.chunk || [];
     const messages = prepareMessages(events);
 
     if (messages.length === 0) {
-      await api.sendBotMessage(
+      await matrixClient.sendBotMessage(
         roomId,
         'No messages found in this room to check for compromises.',
       );
@@ -167,11 +167,11 @@ export const handleCompromisesCommand = async (
       message += `\nError: ${error}`;
     }
 
-    await api.sendBotMessage(roomId, message);
+    await matrixClient.sendBotMessage(roomId, message);
   } catch (error) {
     console.error('Error handling compromises command', error);
     const roomId = event.room_id as string;
-    await api.sendBotMessage(
+    await matrixClient.sendBotMessage(
       roomId,
       'Sorry, I encountered an error while checking for compromises. Please try again.',
     );
@@ -184,13 +184,13 @@ export const handleDraftProposalCommand = async (
   try {
     const roomId = event.room_id as string;
     const limit = extractLimitParam(event);
-    const response = await api.getRoomMessages(roomId, limit);
+    const response = await matrixClient.getRoomMessages(roomId, limit);
 
     const events = response.chunk || [];
     const messages = prepareMessages(events);
 
     if (messages.length === 0) {
-      await api.sendBotMessage(
+      await matrixClient.sendBotMessage(
         roomId,
         'No messages found in this room to draft a proposal.',
       );
@@ -205,11 +205,11 @@ export const handleDraftProposalCommand = async (
       message += `\nError: ${error}`;
     }
 
-    await api.sendBotMessage(roomId, message);
+    await matrixClient.sendBotMessage(roomId, message);
   } catch (error) {
     console.error('Error handling draft proposal command', error);
     const roomId = event.room_id as string;
-    await api.sendBotMessage(
+    await matrixClient.sendBotMessage(
       roomId,
       'Sorry, I encountered an error while drafting a proposal. Please try again.',
     );

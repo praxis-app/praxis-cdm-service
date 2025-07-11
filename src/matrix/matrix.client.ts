@@ -72,5 +72,4 @@ class MatrixClient {
   }
 }
 
-// TODO: Rename to matrixClient
-export const api = new MatrixClient();
+export const matrixClient = new MatrixClient();

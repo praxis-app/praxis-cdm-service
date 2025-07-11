@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { Request, Response } from 'express';
 import { config } from '../config/config';
-import { api } from './matrix.client';
+import { matrixClient } from './matrix.client';
 
 const BOT_DISPLAY_NAME = 'praxis-bot';
 const BOT_AVATAR_URL =
@@ -122,12 +122,17 @@ class AppService extends EventEmitter {
   };
 
   joinRoom = async (roomId: string) => {
-    await api.setStateEvent(roomId, 'm.room.member', config.matrix.botName, {
-      membership: 'join',
-      avatar_url: BOT_AVATAR_URL,
-      displayname: BOT_DISPLAY_NAME,
-    });
-    await api.sendBotMessage(roomId, 'Hey everyone 👋');
+    await matrixClient.setStateEvent(
+      roomId,
+      'm.room.member',
+      config.matrix.botName,
+      {
+        membership: 'join',
+        avatar_url: BOT_AVATAR_URL,
+        displayname: BOT_DISPLAY_NAME,
+      },
+    );
+    await matrixClient.sendBotMessage(roomId, 'Hey everyone 👋');
     console.info(`✅ Successfully joined room: ${roomId}`);
   };
 
