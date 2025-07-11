@@ -11,7 +11,8 @@ interface TestScenario {
 // Centralized test scenarios
 const scenarios: TestScenario[] = [
   {
-    description: 'should return false for conversations that are not ready for proposal',
+    description:
+      'should return false for conversations that are not ready for proposal',
     messages: [
       { sender: 'Alice', body: 'We need to decide on our meeting schedule' },
       { sender: 'Bob', body: 'What are the options?' },
@@ -20,7 +21,8 @@ const scenarios: TestScenario[] = [
     expected: false,
   },
   {
-    description: 'should return true for conversations that are ready for proposal',
+    description:
+      'should return true for conversations that are ready for proposal',
     messages: [
       {
         sender: 'Alice',
@@ -33,7 +35,8 @@ const scenarios: TestScenario[] = [
     expected: true,
   },
   {
-    description: 'should correctly identify final decisions in conversations with changed minds',
+    description:
+      'should correctly identify final decisions in conversations with changed minds',
     messages: [
       { sender: 'Alice', body: "Let's meet on Mondays" },
       { sender: 'Bob', body: 'Monday works' },
@@ -56,7 +59,8 @@ describe('isReadyForProposal', () => {
   // Parameterized test for all defined scenarios
   test.each(scenarios)(
     '$description',
-    async ({ messages, expected, reasonContains }) => {
+    async ({ description, messages, expected, reasonContains }) => {
+      console.info(`\nScenario: ${description}`);
       const result = await isReadyForProposal({ messages });
 
       // Ensure the response has the correct shape
