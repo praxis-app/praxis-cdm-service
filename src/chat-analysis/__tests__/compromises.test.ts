@@ -9,18 +9,26 @@ interface TestScenario {
 
 const scenarios: TestScenario[] = [
   {
-    description: 'should identify compromises in the conversation',
+    description: 'should identify potential compromises in the conversation',
     messages: [
       { sender: 'Alice', body: "I'd prefer to meet in the morning." },
       { sender: 'Bob', body: 'I can only do afternoons.' },
-      { sender: 'Charlie', body: 'What about noon? That could work for me.' },
-      { sender: 'Alice', body: 'Noon is a bit early for me.' },
-      { sender: 'Bob', body: 'How about 2pm?' },
-      { sender: 'Alice', body: "2pm works for me. Let's do that." },
-      { sender: 'Bob', body: 'Great, 2pm it is.' },
+      { sender: 'Alice', body: 'Morning works much better with my schedule.' },
+      {
+        sender: 'Bob',
+        body: 'Sorry, I have meetings all morning every day this week.',
+      },
     ],
     expectedCompromiseKeywords: [
-      ['2pm', '2 pm', 'afternoon', 'meet', 'agree', 'time'],
+      [
+        'noon',
+        'lunch',
+        'midday',
+        '12pm',
+        '1pm',
+        'late morning',
+        'early afternoon',
+      ],
     ],
     expectedCompromise: true,
   },
