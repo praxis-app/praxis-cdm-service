@@ -10,13 +10,6 @@ class MatrixClient {
     });
   }
 
-  joinRoom = async (roomId: string) => {
-    return this.executeRequest<{ room_id: string }>(
-      'post',
-      `/rooms/${encodeURIComponent(roomId)}/join`,
-    );
-  };
-
   getRoomMessages = async (roomId: string, limit: number = 20) => {
     return this.executeRequest<{ chunk: Record<string, unknown>[] }>(
       'get',
