@@ -112,8 +112,8 @@ export const handleDisagreementsCommand = async (
     const separator = disagreements.length > 0 ? ':' : '';
     let message = `${count} (${Date.now() - start}ms)${separator}`;
 
-    for (const [index, disagreement] of disagreements.entries()) {
-      message += `\n\n${index + 1}. ${disagreement}`;
+    for (const disagreement of disagreements) {
+      message += `\n\n- ${disagreement}`;
     }
 
     if (error) {
@@ -159,8 +159,8 @@ export const handleCompromisesCommand = async (
     const separator = compromises.length > 0 ? ':' : '';
     let message = `${count} (${Date.now() - start}ms)${separator}`;
 
-    for (const [index, compromise] of compromises.entries()) {
-      message += `\n\n${index + 1}. ${compromise}`;
+    for (const compromise of compromises) {
+      message += `\n\n- ${compromise}`;
     }
 
     if (error) {
@@ -200,7 +200,7 @@ export const handleDraftProposalCommand = async (
     console.info('✍️ Drafting proposal');
     const start = Date.now();
     const { title, description, error } = await draftProposal({ messages });
-    let message = `Drafted proposal: ${title}\n${description} (${Date.now() - start}ms)`;
+    let message = `[Draft proposal] ${title}\n${description} (${Date.now() - start}ms)`;
     if (error) {
       message += `\nError: ${error}`;
     }
