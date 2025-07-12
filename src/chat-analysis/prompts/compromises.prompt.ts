@@ -12,8 +12,7 @@ export const COMPROMISES_PROMPT: PromptTemplate = {
 
     Rules:
     - Identify potential compromises in a conversation
-    - Return an empty array if no compromises are possible in the conversation
-    - Return an empty array if the conversation is not a disagreement
+    - Return an empty array if there are no disagreements
     - Return a valid JSON object with no other text
 
     Example with compromise(s):

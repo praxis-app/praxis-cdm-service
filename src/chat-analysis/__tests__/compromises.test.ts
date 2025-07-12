@@ -25,10 +25,12 @@ const scenarios: TestScenario[] = [
     expectedCompromise: true,
   },
   {
-    description: 'should not identify compromises when none are possible',
+    description:
+      'should not identify compromises when there are no disagreements',
     messages: [
-      { sender: 'Alice', body: 'We must use a dark theme.' },
-      { sender: 'Bob', body: 'No, a light theme is the only option.' },
+      { sender: 'Alice', body: 'Should we meet at 2pm tomorrow?' },
+      { sender: 'Bob', body: 'Yes, 2pm works perfectly for me.' },
+      { sender: 'Alice', body: 'Great! See you then.' },
     ],
     expectedCompromiseKeywords: [],
     expectedCompromise: false,
