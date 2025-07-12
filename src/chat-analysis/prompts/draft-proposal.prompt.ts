@@ -16,14 +16,14 @@ export const DRAFT_PROPOSAL_PROMPT: PromptTemplate = {
     - Carefully track the conversation chronologically to identify the FINAL consensus
     - Pay attention to words like "instead", "rather than", "let's do that" which indicate a change of mind
     - Focus on what participants ultimately agreed on, not initial suggestions that were later changed
-    - The title and description should be concise and to the point
+    - The title should be concise and include the key subject and decision of the conversation
     - The description should be no more than 2 sentences
     - Return a JSON object with no other text
 
     Example:
     {
-      "title": "Meeting Schedule",
-      "description": "We should meet every Tuesday at 2pm"
+      "title": "Decision: Meet on Tuesdays at 2pm",
+      "description": "The team has agreed to meet every Tuesday at 2pm."
     }
 
   `,

@@ -1,3 +1,11 @@
+/**
+ * TODO: Refine prompts and improve chat analysis capabilities
+ *
+ * This service is responsible for analyzing chat data and generating
+ * summaries, proposals, and other insights. It's capabilities are
+ * limited and still a work in progress.
+ */
+
 import { executePrompt } from '../ollama/ollama.service';
 import { CHAT_SUMMARY_PROMPT } from './prompts/chat-summary.prompt';
 import {
@@ -58,9 +66,9 @@ export const isReadyForProposal = async ({ messages }: Chat) => {
     };
   } catch (e) {
     return {
-      isReady: false,
-      reason: 'Failed to parse JSON from LLM',
       error: JSON.stringify(e),
+      isReady: null,
+      reason: null,
     };
   }
 };
@@ -109,7 +117,7 @@ export const draftProposal = async ({ messages }: Chat) => {
 
   try {
     const content = await executePrompt({
-      model: 'mistral:7b',
+      model: 'llama3.1:8b',
       template: DRAFT_PROPOSAL_PROMPT,
       variables: { chatData },
     });
