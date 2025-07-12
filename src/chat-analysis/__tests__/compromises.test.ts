@@ -62,11 +62,12 @@ describe('getCompromises', () => {
       expect(result).toHaveProperty('compromises');
       expect(Array.isArray(result.compromises)).toBe(true);
 
-      if (expectedCompromise) {
-        expect(result.compromises.length).toBeGreaterThan(0);
-      } else {
+      // Account for scenarios where there are no expected compromises
+      if (!expectedCompromise) {
         expect(result.compromises.length).toBe(0);
+        return;
       }
+      expect(result.compromises.length).toBeGreaterThan(0);
 
       // Check if the compromises contain the expected keywords
       const allCompromises = result.compromises.join(' ').toLowerCase();
@@ -81,6 +82,6 @@ describe('getCompromises', () => {
         }
       }
     },
-    90000, // 90-second timeout for each test case
+    90000,
   );
 });

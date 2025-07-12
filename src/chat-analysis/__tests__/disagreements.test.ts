@@ -58,11 +58,12 @@ describe('getDisagreements', () => {
       expect(result).toHaveProperty('disagreements');
       expect(Array.isArray(result.disagreements)).toBe(true);
 
-      if (expectedDisagreement) {
-        expect(result.disagreements.length).toBeGreaterThan(0);
-      } else {
+      // Account for scenarios where there are no expected disagreements
+      if (!expectedDisagreement) {
         expect(result.disagreements.length).toBe(0);
+        return;
       }
+      expect(result.disagreements.length).toBeGreaterThan(0);
 
       // Check if the disagreements contain the expected keywords
       const allDisagreements = result.disagreements.join(' ').toLowerCase();
