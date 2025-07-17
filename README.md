@@ -1,10 +1,12 @@
 # Praxis CDM Service
 
-Matrix application service that adds collaborative decision-making (CDM) capabilities to Matrix chat rooms with support for proposals, vote validation, consensus tracking, and optional LLM-assisted facilitation.
+Matrix application service that adds collaborative decision-making (CDM) capabilities to Matrix chat rooms with support for proposals, vote validation, and consensus tracking.
 
 ## Work in progress
 
 You are entering a construction yard. Things are going to change and break regularly as the project is still getting off the ground. Please bear in mind that Praxis is not yet intended for serious use outside of testing or research purposes. Your feedback is highly welcome.
+
+Please note that this is also an experimental approach within the Praxis project. The main repository is located at https://github.com/praxis-app/praxis.
 
 ## Installation and setup
 
