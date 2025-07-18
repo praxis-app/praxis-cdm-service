@@ -1,6 +1,6 @@
 # Praxis CDM Service
 
-Praxis is a chat-based collaborative decision-making (CDM) app that seamlessly blends informal discussion with structured democratic processes. Built on the Matrix protocol for federated, decentralized communication, this tool allows groups to transition smoothly from informal conversation to structured decision-making without breaking flow.
+Praxis is a chat-based collaborative decision-making (CDM) app that seamlessly blends informal discussion with structured decision-making processes. Built on the Matrix protocol for federated, decentralized communication, this tool allows groups to transition smoothly from informal conversation to structured decision-making without breaking flow.
 
 Designed for organizations, teams, and communities that need robust group decision-making capabilities, it combines the familiarity of messaging apps with powerful decision-making features like inline proposals, multiple voting models, and forum-style organization when needed. The frontend is built with React and the Matrix JS SDK, while the backend leverages the [Synapse](https://github.com/element-hq/synapse) homeserver implementation (Python + Rust) and a custom application service for validation and extended functionality.
 
