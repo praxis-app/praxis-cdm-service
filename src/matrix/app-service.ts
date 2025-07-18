@@ -3,8 +3,10 @@ import { NextFunction, Request, Response } from 'express';
 import { config } from '../config/config';
 import { matrixClient } from './matrix.client';
 import {
-  handleMatrixMessageEvent,
-  handleMatrixRoomMemberEvent,
+  handleMessageEvent,
+  handlePollResponseEvent,
+  handlePollStartEvent,
+  handleRoomMemberEvent,
 } from './matrix.events';
 
 const BOT_DISPLAY_NAME = 'praxis-bot';
@@ -83,8 +85,10 @@ class AppService extends EventEmitter {
     super();
 
     // Initialize event handlers for Matrix events
-    this.on('type:m.room.member', handleMatrixRoomMemberEvent);
-    this.on('type:m.room.message', handleMatrixMessageEvent);
+    this.on('type:org.matrix.msc3381.poll.start', handlePollStartEvent);
+    this.on('type:org.matrix.msc3381.poll.response', handlePollResponseEvent);
+    this.on('type:m.room.member', handleRoomMemberEvent);
+    this.on('type:m.room.message', handleMessageEvent);
   }
 
   handleTransaction = (req: Request, res: Response) => {
