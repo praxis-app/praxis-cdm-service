@@ -6,7 +6,7 @@ import morgan from 'morgan';
 import { appRouter } from './app.router';
 import { config } from './config/config';
 import { dataSource } from './database/data-source';
-import { getOllamaInitMessage } from './ollama/ollama.service';
+import { getOllamaInitMessage } from './chat-analysis/ollama/ollama.service';
 
 (async () => {
   const startTime = Date.now();

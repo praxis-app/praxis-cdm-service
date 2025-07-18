@@ -6,7 +6,7 @@
  * limited and still a work in progress.
  */
 
-import { executePrompt } from '../ollama/ollama.service';
+import { executePrompt } from './ollama/ollama.service';
 import { CHAT_SUMMARY_PROMPT } from './prompts/chat-summary.prompt';
 import {
   COMPROMISES_PROMPT,

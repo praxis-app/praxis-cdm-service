@@ -1,7 +1,7 @@
 import express from 'express';
 import { healthRouter } from './health/health.router';
 import { matrixRouter } from './matrix/matrix.router';
-import { ollamaRouter } from './ollama/ollama.router';
+import { ollamaRouter } from './chat-analysis/ollama/ollama.router';
 
 export const appRouter = express.Router();
 
