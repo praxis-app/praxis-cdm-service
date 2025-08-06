@@ -2,6 +2,8 @@ import { ChatRequest } from 'ollama';
 
 /** Ollama models that are currently leveraged by the service. */
 export type Model =
+  // Open source model released by OpenAI - https://ollama.com/library/gpt-oss:20b
+  | 'gpt-oss:20b'
   // "State of the art" model - https://ollama.com/library/llama3.1:8b
   | 'llama3.1:8b'
   //  "Accuracy for sentiment analysis" and runs well on low specs - https://ollama.com/library/mistral:7b

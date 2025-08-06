@@ -73,13 +73,14 @@ export const isReadyForProposal = async ({ messages }: Chat) => {
   }
 };
 
+// FIXME: This is not working as expected with the gpt-oss:20b model
 export const getDisagreements = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
   const chatData = shapeChatData(recentMessages);
 
   try {
     const content = await executePrompt({
-      model: 'mistral:7b',
+      model: 'gpt-oss:20b',
       template: DISAGREEMENTS_PROMPT,
       variables: { chatData },
     });
