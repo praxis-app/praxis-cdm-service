@@ -6,7 +6,7 @@
  * limited and still a work in progress.
  */
 
-import { executePrompt } from '../ollama/ollama.service';
+import { executePrompt } from './ollama/ollama.service';
 import { CHAT_SUMMARY_PROMPT } from './prompts/chat-summary.prompt';
 import {
   COMPROMISES_PROMPT,
@@ -73,21 +73,24 @@ export const isReadyForProposal = async ({ messages }: Chat) => {
   }
 };
 
+// FIXME: This is not working as expected with the gpt-oss:20b model
 export const getDisagreements = async ({ messages }: Chat) => {
   const recentMessages = messages.slice(-50);
   const chatData = shapeChatData(recentMessages);
 
   try {
     const content = await executePrompt({
-      model: 'mistral:7b',
+      model: 'gpt-oss:20b',
       template: DISAGREEMENTS_PROMPT,
       variables: { chatData },
     });
+    console.log('Raw model response:', content);
     const parsedContent = JSON.parse(content);
     const response = disagreementsSchema.parse(parsedContent);
 
     return { disagreements: response.disagreements };
   } catch (e) {
+    console.log('Error in getDisagreements:', e);
     return { disagreements: [], error: JSON.stringify(e) };
   }
 };

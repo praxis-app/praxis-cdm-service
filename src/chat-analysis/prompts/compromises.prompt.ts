@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { PromptTemplate } from '../../ollama/ollama.types';
+import { PromptTemplate } from '../ollama/ollama.types';
 
 export const compromisesSchema = z.object({
   compromises: z.string().array().describe('An array of compromises'),

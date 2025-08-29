@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PromptTemplate } from '../../ollama/ollama.types';
+import { PromptTemplate } from '../ollama/ollama.types';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 
 export const disagreementsSchema = z.object({
